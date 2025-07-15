@@ -1,0 +1,1 @@
+MaliGo is an upcoming project startup that is set to take the open payments world by storm.
