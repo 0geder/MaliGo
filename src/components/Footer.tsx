@@ -72,8 +72,8 @@ const Footer = () => {
         
         <div className="border-t border-gray-700 pt-8 text-center">
           <p className="text-gray-400">
-            © 2024 MaliGo. Making financial literacy fun and accessible for all South Africans. 
-            Mali the Meerkat is here to help you save, learn, and grow! 🇿🇦
+            2026 MaliGo. Making financial literacy fun and accessible for all South Africans. 
+            Mali Meerkat is here to help you save, learn, and grow! 
           </p>
         </div>
       </div>
