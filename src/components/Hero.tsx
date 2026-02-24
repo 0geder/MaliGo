@@ -39,7 +39,7 @@ const Hero = () => {
           
           <div className="flex justify-center">
             <img 
-              src="/lovable-uploads/b55ce985-e17b-4728-82c2-a40c2b4b9479.png" 
+              src="/maligo-uploads/b55ce985-e17b-4728-82c2-a40c2b4b9479.png" 
               alt="Mali the Meerkat - MaliGo Mascot" 
               className="w-80 h-80 object-contain animate-bounce-gentle"
             />
