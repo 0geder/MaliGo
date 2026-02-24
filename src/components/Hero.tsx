@@ -9,10 +9,6 @@ const Hero = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-maligo-green/5 to-maligo-orange/5"></div>
       <div className="relative max-w-7xl mx-auto">
         <div className="text-center">
-          <Badge className="mb-4 bg-maligo-green text-white hover:bg-maligo-green-dark">
-            🚀 Coming Soon to South Africa
-          </Badge>
-          
           <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             MaliGo: Financial Literacy &<br />
             <span className="text-maligo-green">Gamified Savings</span><br />
