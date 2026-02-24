@@ -164,7 +164,7 @@ export default function Chat() {
         content: aiResponse,
       })
 
-      setMessages(prev => [...prev, userMessage, assistantMessage])
+      setMessages(prev => [...prev, assistantMessage])
       setIsTyping(false)
     }, 1000 + Math.random() * 1000)
   }
