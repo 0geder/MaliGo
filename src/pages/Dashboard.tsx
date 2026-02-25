@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
+import SideDrawerNav from "@/components/SideDrawerNav";
 
 function formatMoneyZAR(amount: number) {
   return `R${Math.round(amount).toLocaleString("en-ZA")}`
@@ -152,7 +153,19 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-maligo-green mb-2">Welcome back, {profile.fullName}!</h1>
+          <div className="flex justify-between items-center mb-4">
+            <Link to="/">
+              <Button variant="outline" className="border-maligo-green text-maligo-green">
+                ← Home
+              </Button>
+            </Link>
+            <h1 className="text-4xl font-bold text-maligo-green">Welcome back, {profile.fullName}!</h1>
+            <Link to="/game">
+              <Button variant="outline" className="border-maligo-green text-maligo-green">
+                Play Game
+              </Button>
+            </Link>
+          </div>
           <p className="text-gray-600">Here's your savings journey with Mali the Meerkat</p>
         </div>
 
@@ -360,19 +373,8 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* Navigation */}
-        <div className="mt-8 flex gap-4 justify-center">
-          <Link to="/game">
-            <Button variant="outline" className="border-maligo-green text-maligo-green">
-              Play Budget Game
-            </Button>
-          </Link>
-          <Link to="/chat">
-            <Button variant="outline" className="border-maligo-green text-maligo-green">
-              Chat with Mali
-            </Button>
-          </Link>
-        </div>
+        {/* Quick Actions */}
+        <SideDrawerNav />
       </div>
     </div>
   )

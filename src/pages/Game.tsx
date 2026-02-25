@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 
 import { grantXp, getProfile, ensureProfile, type Profile } from "@/lib/mvpDb"
 
+import SideDrawerNav from "@/components/SideDrawerNav";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -161,7 +162,19 @@ export default function Game() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-maligo-green mb-4">Budget Challenge Game</h1>
+          <div className="flex justify-between items-center mb-4">
+            <Link to="/">
+              <Button variant="outline" className="border-maligo-green text-maligo-green">
+                ← Home
+              </Button>
+            </Link>
+            <h1 className="text-4xl font-bold text-maligo-green">Budget Challenge Game</h1>
+            <Link to="/dashboard">
+              <Button variant="outline" className="border-maligo-green text-maligo-green">
+                Dashboard
+              </Button>
+            </Link>
+          </div>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Learn to distinguish between <span className="font-bold text-maligo-green">Needs</span> and{" "}
             <span className="font-bold text-maligo-orange">Wants</span> with R{BUDGET.toLocaleString("en-ZA")} monthly budget
@@ -286,19 +299,8 @@ export default function Game() {
           </div>
         </div>
 
-        {/* Navigation */}
-        <div className="mt-8 flex gap-4 justify-center">
-          <Link to="/dashboard">
-            <Button variant="outline" className="border-maligo-green text-maligo-green">
-              Back to Dashboard
-            </Button>
-          </Link>
-          <Link to="/chat">
-            <Button variant="outline" className="border-maligo-green text-maligo-green">
-              Ask Mali for Help
-            </Button>
-          </Link>
-        </div>
+        {/* Quick Actions */}
+        <SideDrawerNav />
       </div>
     </div>
   )

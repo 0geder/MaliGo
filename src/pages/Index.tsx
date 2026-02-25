@@ -12,7 +12,7 @@ import GameMechanics from "@/components/GameMechanics";
 import HowItWorks from "@/components/HowItWorks";
 import Testimonials from "@/components/Testimonials";
 import Footer from "@/components/Footer";
-import Navigation from "@/components/Navigation";
+import SideDrawerNav from "@/components/SideDrawerNav";
 
 const Index = () => {
   const { loading } = useAuth();
@@ -28,6 +28,7 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
+      <SideDrawerNav />
       <div className="bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10">
         <Hero />
         <Features />

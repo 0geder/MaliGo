@@ -14,7 +14,7 @@ import {
   type Mission,
 } from "@/lib/mvpDb"
 
-import { Button } from "@/components/ui/button"
+import SideDrawerNav from "@/components/SideDrawerNav";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
@@ -190,11 +190,23 @@ export default function Chat() {
         {/* Header */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="text-maligo-green">Chat with Mali 🐾</CardTitle>
-            <CardDescription>Your financial literacy assistant</CardDescription>
+            <div className="flex justify-between items-center">
+              <Link to="/">
+                <Button variant="outline" className="border-maligo-green text-maligo-green">
+                  ← Home
+                </Button>
+              </Link>
+              <CardTitle className="text-maligo-green">Chat with Mali 🐾</CardTitle>
+              <Link to="/dashboard">
+                <Button variant="outline" className="border-maligo-green text-maligo-green">
+                  Dashboard
+                </Button>
+              </Link>
+            </div>
+            <CardDescription className="text-center">Your financial literacy assistant</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-wrap gap-2 text-sm">
+            <div className="flex flex-wrap gap-2 text-sm justify-center">
               <Badge className="bg-maligo-green text-white">Ask me anything!</Badge>
               <Badge variant="outline">Goals: {goals.filter(g => g.status === "active").length}</Badge>
               <Badge variant="outline">Streak: {profile.currentStreak} days</Badge>
@@ -276,19 +288,8 @@ export default function Chat() {
           </CardContent>
         </Card>
 
-        {/* Navigation */}
-        <div className="mt-4 flex gap-4 justify-center">
-          <Link to="/dashboard">
-            <Button variant="outline" className="border-maligo-green text-maligo-green">
-              Back to Dashboard
-            </Button>
-          </Link>
-          <Link to="/game">
-            <Button variant="outline" className="border-maligo-green text-maligo-green">
-              Play Budget Game
-            </Button>
-          </Link>
-        </div>
+        {/* Quick Actions */}
+        <SideDrawerNav />
       </div>
     </div>
   )
