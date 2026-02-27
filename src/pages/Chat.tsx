@@ -190,19 +190,7 @@ export default function Chat() {
         {/* Header */}
         <Card className="mb-6">
           <CardHeader>
-            <div className="flex justify-between items-center">
-              <Link to="/">
-                <Button variant="outline" className="border-maligo-green text-maligo-green">
-                  ← Home
-                </Button>
-              </Link>
-              <CardTitle className="text-maligo-green">Chat with Mali 🐾</CardTitle>
-              <Link to="/dashboard">
-                <Button variant="outline" className="border-maligo-green text-maligo-green">
-                  Dashboard
-                </Button>
-              </Link>
-            </div>
+            <CardTitle className="text-maligo-green text-center">Chat with Mali 🐾</CardTitle>
             <CardDescription className="text-center">Your financial literacy assistant</CardDescription>
           </CardHeader>
           <CardContent>

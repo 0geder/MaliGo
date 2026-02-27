@@ -104,6 +104,20 @@ const Signup = () => {
         signedUpAt: new Date().toISOString()
       }))
       
+      // Also create a profile for the user
+      const { ensureProfile } = await import("@/lib/mvpDb")
+      ensureProfile({
+        userId: "demo-user-001",
+        fullName: formData.fullName,
+        totalSaved: 0,
+        currentStreak: 0,
+        longestStreak: 0,
+        xpPoints: 50, // Give welcome XP
+        maliLevel: 1,
+        missionsCompleted: 0,
+        badgesEarned: 1, // Welcome badge
+      })
+      
       toast({
         title: "Welcome to MaliGo! 🎉",
         description: "Your account has been created successfully. Start your savings journey now!",
@@ -127,13 +141,14 @@ const Signup = () => {
     <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6 pb-20">
       <div className="max-w-md mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center text-maligo-green hover:text-maligo-green-dark mb-4">
-            ← Back to Home
-          </Link>
-          <h1 className="text-3xl font-bold text-maligo-green mb-2">Join MaliGo</h1>
-          <p className="text-gray-600">Start your financial literacy journey with Mali the Meerkat</p>
-        </div>
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="text-maligo-green text-center">Create Your Account</CardTitle>
+            <CardDescription className="text-center">
+              Join thousands of South Africans learning to save smarter
+            </CardDescription>
+          </CardHeader>
+        </Card>
 
         <Card>
           <CardHeader>

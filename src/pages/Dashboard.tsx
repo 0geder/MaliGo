@@ -159,19 +159,7 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <Link to="/">
-              <Button variant="outline" className="border-maligo-green text-maligo-green">
-                ← Home
-              </Button>
-            </Link>
-            <h1 className="text-4xl font-bold text-maligo-green">Welcome back, {profile.fullName}!</h1>
-            <Link to="/game">
-              <Button variant="outline" className="border-maligo-green text-maligo-green">
-                Play Game
-              </Button>
-            </Link>
-          </div>
+          <h1 className="text-4xl font-bold text-maligo-green mb-2">Welcome back, {profile.fullName}!</h1>
           <p className="text-gray-600">Here's your savings journey with Mali the Meerkat</p>
         </div>
 

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { useAuthStatus } from "@/hooks/useAuthStatus"
 
-const BottomNav = () => {
+const TopNav = () => {
   const location = useLocation()
   const { isSignedUp, isLoading } = useAuthStatus()
   const [isVisible, setIsVisible] = useState(true)
@@ -48,9 +48,20 @@ const BottomNav = () => {
   // Auto-hide on scroll
   useEffect(() => {
     let scrollTimer: NodeJS.Timeout
+    let lastScrollY = window.scrollY
     
     const handleScroll = () => {
-      setIsVisible(false)
+      const currentScrollY = window.scrollY
+      
+      // Hide when scrolling down, show when scrolling up
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false)
+      } else if (currentScrollY < lastScrollY) {
+        setIsVisible(true)
+        resetAutoHideTimer()
+      }
+      
+      lastScrollY = currentScrollY
       
       // Show again after scroll stops
       clearTimeout(scrollTimer)
@@ -82,17 +93,17 @@ const BottomNav = () => {
       {/* Toggle Button */}
       <button
         onClick={toggleNav}
-        className={`fixed bottom-4 right-4 z-50 bg-maligo-green hover:bg-maligo-green-dark text-white rounded-full w-12 h-12 shadow-lg transition-all duration-300 ${
-          isVisible ? 'translate-y-16 opacity-0' : 'translate-y-0 opacity-100'
+        className={`fixed top-4 right-4 z-50 bg-maligo-green hover:bg-maligo-green-dark text-white rounded-full w-12 h-12 shadow-lg transition-all duration-300 ${
+          isVisible ? 'translate-x-16 opacity-0' : 'translate-x-0 opacity-100'
         }`}
       >
         <span className="text-lg">☰</span>
       </button>
 
-      {/* Bottom Navigation */}
+      {/* Top Navigation */}
       <div
-        className={`fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40 transition-transform duration-300 ${
-          isVisible ? 'translate-y-0' : 'translate-y-full'
+        className={`fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-40 transition-transform duration-300 ${
+          isVisible ? 'translate-y-0' : '-translate-y-full'
         }`}
         onMouseEnter={handleNavClick}
       >
@@ -128,4 +139,4 @@ const BottomNav = () => {
   )
 }
 
-export default BottomNav
+export default TopNav

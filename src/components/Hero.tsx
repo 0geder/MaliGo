@@ -2,8 +2,10 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowDown } from "lucide-react";
+import { useAuthStatus } from "@/hooks/useAuthStatus";
 
 const Hero = () => {
+  const { isSignedUp, isLoading } = useAuthStatus();
   return (
     <section className="relative overflow-hidden py-20 px-4 sm:px-6 lg:px-8">
       <div className="absolute inset-0 bg-gradient-to-br from-maligo-green/5 to-maligo-orange/5"></div>
@@ -16,27 +18,50 @@ const Hero = () => {
           </h1>
           
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Meet Mali the Meerkat! Your friendly financial companion helping you build 
-            saving habits through fun challenges, mini-games, and real rewards. 
-            Start your savings journey with just R5!
+            {isSignedUp 
+              ? "Welcome back! Continue your savings journey with Mali the Meerkat. Track your progress, complete missions, and build better financial habits."
+              : "Meet Mali the Meerkat! Your friendly financial companion helping you build saving habits through fun challenges, mini-games, and real rewards. Start your savings journey with just R5!"
+            }
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <Button 
-              size="lg" 
-              className="bg-maligo-green hover:bg-maligo-green-dark text-white px-8 py-3 text-lg"
-              onClick={() => window.location.href = '/signup'}
-            >
-              Join Waitlist
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="border-maligo-green text-maligo-green hover:bg-maligo-green hover:text-white px-8 py-3 text-lg"
-              onClick={() => window.location.href = '/game'}
-            >
-              Try Budget Game
-            </Button>
+            {!isSignedUp ? (
+              <>
+                <Button 
+                  size="lg" 
+                  className="bg-maligo-green hover:bg-maligo-green-dark text-white px-8 py-3 text-lg"
+                  onClick={() => window.location.href = '/signup'}
+                >
+                  Join Waitlist
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="border-maligo-green text-maligo-green hover:bg-maligo-green hover:text-white px-8 py-3 text-lg"
+                  onClick={() => window.location.href = '/game'}
+                >
+                  Try Budget Game
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button 
+                  size="lg" 
+                  className="bg-maligo-green hover:bg-maligo-green-dark text-white px-8 py-3 text-lg"
+                  onClick={() => window.location.href = '/dashboard'}
+                >
+                  Go to Dashboard
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="border-maligo-green text-maligo-green hover:bg-maligo-green hover:text-white px-8 py-3 text-lg"
+                  onClick={() => window.location.href = '/game'}
+                >
+                  Play Budget Game
+                </Button>
+              </>
+            )}
           </div>
           
           <div className="flex justify-center">
