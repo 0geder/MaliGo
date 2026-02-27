@@ -162,19 +162,7 @@ export default function Game() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <Link to="/">
-              <Button variant="outline" className="border-maligo-green text-maligo-green">
-                ← Home
-              </Button>
-            </Link>
-            <h1 className="text-4xl font-bold text-maligo-green">Budget Challenge Game</h1>
-            <Link to="/dashboard">
-              <Button variant="outline" className="border-maligo-green text-maligo-green">
-                Dashboard
-              </Button>
-            </Link>
-          </div>
+          <h1 className="text-4xl font-bold text-maligo-green mb-4">Budget Challenge Game</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Learn to distinguish between <span className="font-bold text-maligo-green">Needs</span> and{" "}
             <span className="font-bold text-maligo-orange">Wants</span> with R{BUDGET.toLocaleString("en-ZA")} monthly budget

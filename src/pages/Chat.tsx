@@ -15,6 +15,7 @@ import {
 } from "@/lib/mvpDb"
 
 import BottomNav from "@/components/BottomNav";
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
@@ -176,10 +177,15 @@ export default function Chat() {
     }
   }
 
+  console.log("Chat component rendering, profile:", profile);
+
   if (!profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-maligo-green"></div>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-maligo-green mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading chat...</p>
+        </div>
       </div>
     )
   }
@@ -190,19 +196,7 @@ export default function Chat() {
         {/* Header */}
         <Card className="mb-6">
           <CardHeader>
-            <div className="flex justify-between items-center">
-              <Link to="/">
-                <Button variant="outline" className="border-maligo-green text-maligo-green">
-                  ← Home
-                </Button>
-              </Link>
-              <CardTitle className="text-maligo-green">Chat with Mali 🐾</CardTitle>
-              <Link to="/dashboard">
-                <Button variant="outline" className="border-maligo-green text-maligo-green">
-                  Dashboard
-                </Button>
-              </Link>
-            </div>
+            <CardTitle className="text-maligo-green text-center">Chat with Mali 🐾</CardTitle>
             <CardDescription className="text-center">Your financial literacy assistant</CardDescription>
           </CardHeader>
           <CardContent>

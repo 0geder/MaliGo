@@ -12,7 +12,6 @@ import GameMechanics from "@/components/GameMechanics";
 import HowItWorks from "@/components/HowItWorks";
 import Testimonials from "@/components/Testimonials";
 import Footer from "@/components/Footer";
-import Navigation from "@/components/Navigation";
 import BottomNav from "@/components/BottomNav";
 
 const Index = () => {
@@ -28,7 +27,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen pb-20">
-      <Navigation />
       <BottomNav />
       <div className="bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10">
         <Hero />
