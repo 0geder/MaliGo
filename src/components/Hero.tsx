@@ -25,15 +25,17 @@ const Hero = () => {
             <Button 
               size="lg" 
               className="bg-maligo-green hover:bg-maligo-green-dark text-white px-8 py-3 text-lg"
+              onClick={() => window.location.href = '/signup'}
             >
-              Join the Waitlist
+              Join Waitlist
             </Button>
             <Button 
               variant="outline" 
               size="lg" 
               className="border-maligo-green text-maligo-green hover:bg-maligo-green hover:text-white px-8 py-3 text-lg"
+              onClick={() => window.location.href = '/game'}
             >
-              Watch Demo
+              Try Budget Game
             </Button>
           </div>
           

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 
 import { grantXp, getProfile, ensureProfile, type Profile } from "@/lib/mvpDb"
 
-import SideDrawerNav from "@/components/SideDrawerNav";
+import BottomNav from "@/components/BottomNav";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -158,7 +158,7 @@ export default function Game() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6 pb-20">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -300,7 +300,7 @@ export default function Game() {
         </div>
 
         {/* Quick Actions */}
-        <SideDrawerNav />
+        <BottomNav />
       </div>
     </div>
   )

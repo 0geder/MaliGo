@@ -14,7 +14,7 @@ import {
   type Mission,
 } from "@/lib/mvpDb"
 
-import SideDrawerNav from "@/components/SideDrawerNav";
+import BottomNav from "@/components/BottomNav";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
@@ -185,7 +185,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6 pb-20">
       <div className="max-w-4xl mx-auto h-[calc(100vh-3rem)] flex flex-col">
         {/* Header */}
         <Card className="mb-6">
@@ -289,7 +289,7 @@ export default function Chat() {
         </Card>
 
         {/* Quick Actions */}
-        <SideDrawerNav />
+        <BottomNav />
       </div>
     </div>
   )

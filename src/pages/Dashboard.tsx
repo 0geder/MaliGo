@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
-import SideDrawerNav from "@/components/SideDrawerNav";
+import BottomNav from "@/components/BottomNav";
 
 function formatMoneyZAR(amount: number) {
   return `R${Math.round(amount).toLocaleString("en-ZA")}`
@@ -52,9 +52,15 @@ export default function Dashboard() {
 
   useEffect(() => {
     const p = getProfile(DEMO_USER_ID) ?? ensureProfile({ 
-      id: DEMO_USER_ID, 
-      email: "demo@maligo.test", 
-      fullName: "Demo User" 
+      userId: DEMO_USER_ID, 
+      fullName: "Demo User",
+      totalSaved: 0,
+      currentStreak: 0,
+      longestStreak: 0,
+      xpPoints: 0,
+      maliLevel: 1,
+      missionsCompleted: 0,
+      badgesEarned: 0,
     })
     setProfile(p)
     setMissions(listMissions())
@@ -149,7 +155,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6 pb-20">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -374,7 +380,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Quick Actions */}
-        <SideDrawerNav />
+        <BottomNav />
       </div>
     </div>
   )
