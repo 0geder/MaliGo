@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
-import BottomNav from "@/components/BottomNav";
+import TopNav from "@/components/TopNav";
 
 function formatMoneyZAR(amount: number) {
   return `R${Math.round(amount).toLocaleString("en-ZA")}`
@@ -155,8 +155,9 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6 pb-20">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10">
+      <TopNav />
+      <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-maligo-green mb-2">Welcome back, {profile.fullName}!</h1>
@@ -366,9 +367,6 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
-
-        {/* Quick Actions */}
-        <BottomNav />
       </div>
     </div>
   )

@@ -6,8 +6,7 @@ import { useAuthStatus } from "@/hooks/useAuthStatus"
 const TopNav = () => {
   const location = useLocation()
   const { isSignedUp, isLoading } = useAuthStatus()
-  const [isVisible, setIsVisible] = useState(true)
-  const [autoHideTimer, setAutoHideTimer] = useState<NodeJS.Timeout | null>(null)
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null)
   
   // Dynamic navigation items based on signup status
   const navItems = [
@@ -18,124 +17,61 @@ const TopNav = () => {
     { to: "/chat", icon: "💬", label: "Chat" },
   ]
 
-  const resetAutoHideTimer = () => {
-    if (autoHideTimer) {
-      clearTimeout(autoHideTimer)
-    }
-    
-    const timer = setTimeout(() => {
-      setIsVisible(false)
-    }, 5000) // Auto-hide after 5 seconds
-
-    setAutoHideTimer(timer)
-  }
-
-  const toggleNav = () => {
-    setIsVisible(!isVisible)
-    if (!isVisible) {
-      resetAutoHideTimer()
-    } else {
-      if (autoHideTimer) {
-        clearTimeout(autoHideTimer)
-      }
-    }
-  }
-
-  const handleNavClick = () => {
-    resetAutoHideTimer()
-  }
-
-  // Auto-hide on scroll
-  useEffect(() => {
-    let scrollTimer: NodeJS.Timeout
-    let lastScrollY = window.scrollY
-    
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY
-      
-      // Hide when scrolling down, show when scrolling up
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setIsVisible(false)
-      } else if (currentScrollY < lastScrollY) {
-        setIsVisible(true)
-        resetAutoHideTimer()
-      }
-      
-      lastScrollY = currentScrollY
-      
-      // Show again after scroll stops
-      clearTimeout(scrollTimer)
-      scrollTimer = setTimeout(() => {
-        setIsVisible(true)
-        resetAutoHideTimer()
-      }, 1000)
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      clearTimeout(scrollTimer)
-      if (autoHideTimer) {
-        clearTimeout(autoHideTimer)
-      }
-    }
-  }, [autoHideTimer])
-
-  // Show on route change
-  useEffect(() => {
-    setIsVisible(true)
-    resetAutoHideTimer()
-  }, [location.pathname])
-
   return (
-    <>
-      {/* Toggle Button */}
-      <button
-        onClick={toggleNav}
-        className={`fixed top-4 right-4 z-50 bg-maligo-green hover:bg-maligo-green-dark text-white rounded-full w-12 h-12 shadow-lg transition-all duration-300 ${
-          isVisible ? 'translate-x-16 opacity-0' : 'translate-x-0 opacity-100'
-        }`}
-      >
-        <span className="text-lg">☰</span>
-      </button>
+    <nav className="sticky top-0 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-lg z-40">
+      <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 py-4">
+        {/* Logo */}
+        <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
+          <img 
+            src="/maligo-uploads/b55ce985-e17b-4728-82c2-a40c2b4b9479.png" 
+            alt="Mali the Meerkat" 
+            className="w-8 h-8 object-contain"
+          />
+          <span className="text-xl font-bold text-maligo-green hidden sm:inline">MaliGo</span>
+        </Link>
 
-      {/* Top Navigation */}
-      <div
-        className={`fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-40 transition-transform duration-300 ${
-          isVisible ? 'translate-y-0' : '-translate-y-full'
-        }`}
-        onMouseEnter={handleNavClick}
-      >
-        <div className="flex justify-around items-center py-2">
+        {/* Navigation Items */}
+        <div className="flex items-center space-x-2 sm:space-x-4">
           {navItems.map((item) => {
             const isActive = location.pathname === item.to
+            const isHovered = hoveredItem === item.to
+            
             return (
-              <Link key={item.to} to={item.to} onClick={handleNavClick}>
-                <Button
-                  variant="ghost"
-                  className={`flex flex-col items-center p-2 h-auto rounded-lg transition-all ${
-                    isActive
-                      ? "text-maligo-green bg-maligo-green/10"
-                      : "text-gray-600 hover:text-maligo-green"
-                  }`}
-                >
-                  <span className="text-xl mb-1">{item.icon}</span>
-                  <span className="text-xs">{item.label}</span>
-                </Button>
+              <Link key={item.to} to={item.to}>
+                <div className="relative">
+                  <Button
+                    variant="ghost"
+                    className={`flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                      isActive
+                        ? "bg-maligo-green/20 text-maligo-green shadow-md"
+                        : isHovered
+                        ? "bg-gray-100 text-gray-700"
+                        : "text-gray-600 hover:text-maligo-green"
+                    }`}
+                    onMouseEnter={() => setHoveredItem(item.to)}
+                    onMouseLeave={() => setHoveredItem(null)}
+                  >
+                    <span className={`text-lg transition-transform duration-200 ${
+                      isActive || isHovered ? 'scale-110' : 'scale-100'
+                    }`}>
+                      {item.icon}
+                    </span>
+                    <span className="text-xs sm:text-sm font-medium hidden sm:inline">
+                      {item.label}
+                    </span>
+                    
+                    {/* Active indicator */}
+                    {isActive && (
+                      <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-maligo-green rounded-full" />
+                    )}
+                  </Button>
+                </div>
               </Link>
             )
           })}
         </div>
-        
-        {/* Auto-hide indicator */}
-        {isVisible && (
-          <div className="text-center text-xs text-gray-500 pb-1">
-            Auto-hides in 5s
-          </div>
-        )}
       </div>
-    </>
+    </nav>
   )
 }
 

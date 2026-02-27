@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 
 import { grantXp, getProfile, ensureProfile, type Profile } from "@/lib/mvpDb"
 
-import BottomNav from "@/components/BottomNav";
+import TopNav from "@/components/TopNav";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -123,8 +123,9 @@ export default function Game() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6">
-        <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10\">
+        <TopNav />
+        <div className="max-w-4xl mx-auto p-6\">
           <Card className="text-center">
             <CardHeader>
               <CardTitle className="text-4xl text-maligo-green mb-4">Game Complete! 🎉</CardTitle>
@@ -158,8 +159,9 @@ export default function Game() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6 pb-20">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10\">
+      <TopNav />
+      <div className="max-w-6xl mx-auto p-6\">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-maligo-green mb-4">Budget Challenge Game</h1>
@@ -286,9 +288,6 @@ export default function Game() {
             </Card>
           </div>
         </div>
-
-        {/* Quick Actions */}
-        <BottomNav />
       </div>
     </div>
   )

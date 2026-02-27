@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
-import BottomNav from "@/components/BottomNav"
+import TopNav from "@/components/TopNav"
 
 const Signup = () => {
   const navigate = useNavigate()
@@ -138,8 +138,9 @@ const Signup = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6 pb-20">
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10\">
+      <TopNav />
+      <div className="max-w-md mx-auto p-6\">
         {/* Header */}
         <Card className="mb-6">
           <CardHeader>
@@ -305,8 +306,6 @@ const Signup = () => {
           </div>
         </div>
       </div>
-      
-      <BottomNav />
     </div>
   )
 }

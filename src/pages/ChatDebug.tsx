@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getProfile, ensureProfile, listChatMessages, addChatMessage } from "@/lib/mvpDb"
-import BottomNav from "@/components/BottomNav"
+import TopNav from "@/components/TopNav"
 
 const ChatDebug = () => {
   const [logs, setLogs] = useState<string[]>([])
@@ -91,8 +91,9 @@ const ChatDebug = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6 pb-20">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10\">
+      <TopNav />
+      <div className="max-w-4xl mx-auto p-6\">
         <Card>
           <CardHeader>
             <CardTitle className="text-maligo-green">Chat System Debug</CardTitle>
@@ -134,8 +135,6 @@ const ChatDebug = () => {
           </CardContent>
         </Card>
       </div>
-      
-      <BottomNav />
     </div>
   )
 }
