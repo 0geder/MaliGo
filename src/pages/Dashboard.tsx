@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
+import BottomNav from "@/components/BottomNav";
 
 function formatMoneyZAR(amount: number) {
   return `R${Math.round(amount).toLocaleString("en-ZA")}`
@@ -51,9 +52,15 @@ export default function Dashboard() {
 
   useEffect(() => {
     const p = getProfile(DEMO_USER_ID) ?? ensureProfile({ 
-      id: DEMO_USER_ID, 
-      email: "demo@maligo.test", 
-      fullName: "Demo User" 
+      userId: DEMO_USER_ID, 
+      fullName: "Demo User",
+      totalSaved: 0,
+      currentStreak: 0,
+      longestStreak: 0,
+      xpPoints: 0,
+      maliLevel: 1,
+      missionsCompleted: 0,
+      badgesEarned: 0,
     })
     setProfile(p)
     setMissions(listMissions())
@@ -148,11 +155,23 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6 pb-20">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-maligo-green mb-2">Welcome back, {profile.fullName}!</h1>
+          <div className="flex justify-between items-center mb-4">
+            <Link to="/">
+              <Button variant="outline" className="border-maligo-green text-maligo-green">
+                ← Home
+              </Button>
+            </Link>
+            <h1 className="text-4xl font-bold text-maligo-green">Welcome back, {profile.fullName}!</h1>
+            <Link to="/game">
+              <Button variant="outline" className="border-maligo-green text-maligo-green">
+                Play Game
+              </Button>
+            </Link>
+          </div>
           <p className="text-gray-600">Here's your savings journey with Mali the Meerkat</p>
         </div>
 
@@ -360,19 +379,8 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* Navigation */}
-        <div className="mt-8 flex gap-4 justify-center">
-          <Link to="/game">
-            <Button variant="outline" className="border-maligo-green text-maligo-green">
-              Play Budget Game
-            </Button>
-          </Link>
-          <Link to="/chat">
-            <Button variant="outline" className="border-maligo-green text-maligo-green">
-              Chat with Mali
-            </Button>
-          </Link>
-        </div>
+        {/* Quick Actions */}
+        <BottomNav />
       </div>
     </div>
   )
