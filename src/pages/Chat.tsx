@@ -14,7 +14,7 @@ import {
   type Mission,
 } from "@/lib/mvpDb"
 
-import BottomNav from "@/components/BottomNav";
+import TopNav from "@/components/TopNav";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -191,8 +191,9 @@ export default function Chat() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6 pb-20">
-      <div className="max-w-4xl mx-auto h-[calc(100vh-3rem)] flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10">
+      <TopNav />
+      <div className="max-w-4xl mx-auto p-6 h-[calc(100vh-10rem)] flex flex-col">
         {/* Header */}
         <Card className="mb-6">
           <CardHeader>
@@ -281,9 +282,6 @@ export default function Chat() {
             </div>
           </CardContent>
         </Card>
-
-        {/* Quick Actions */}
-        <BottomNav />
       </div>
     </div>
   )
