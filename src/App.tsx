@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Game from "./pages/Game";
 import Chat from "./pages/Chat";
 import ChatTest from "./pages/ChatTest";
+import ChatDebug from "./pages/ChatDebug";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/game" element={<Game />} />
             <Route path="/chat" element={<Chat />} />
             <Route path="/chat-test" element={<ChatTest />} />
+            <Route path="/chat-debug" element={<ChatDebug />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
