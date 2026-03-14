@@ -11,6 +11,7 @@ import Chat from "./pages/Chat";
 import ChatTest from "./pages/ChatTest";
 import ChatDebug from "./pages/ChatDebug";
 import Signup from "./pages/Signup";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/game" element={<Game />} />
