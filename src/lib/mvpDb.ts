@@ -69,14 +69,14 @@ const KEYS = {
 function safeParse<T>(raw: string | null, fallback: T): T {
   if (!raw) return fallback;
   try {
-    return JSON.parse(raw) as T;
+    return JSON.parse(raw);
   } catch {
     return fallback;
   }
 }
 
 function uuid(): string {
-  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  return Math.random().toString(36).slice(2) + Date.now().toString(36);
 }
 
 function sameDay(a: Date, b: Date): boolean {
@@ -96,40 +96,40 @@ export function seedMissionsOnce() {
 
   const missions: Mission[] = [
     {
-      id: "m1",
-      title: "Save R5 today",
-      description: "Start small! Save just R5 today to build the habit.",
+      id: "1",
+      title: "Save R5 Today",
+      description: "Put aside just R5 today - every rand counts!",
       xpReward: 10,
       amountSuggestion: 5,
       isActive: true,
     },
     {
-      id: "m2",
-      title: "No takeaway for 3 days",
-      description: "Skip takeaways for 3 days and put that money aside.",
-      xpReward: 30,
+      id: "2", 
+      title: "Skip Takeaway",
+      description: "Cook at home instead of buying takeaway. Save R50+!",
+      xpReward: 25,
+      amountSuggestion: 50,
       isActive: true,
     },
     {
-      id: "m3",
-      title: "Review your budget",
-      description: "Spend 15 minutes reviewing where your money went this month.",
+      id: "3",
+      title: "Track Expenses",
+      description: "Write down everything you spend today. Awareness is key!",
       xpReward: 15,
       isActive: true,
     },
     {
-      id: "m4",
-      title: "Save R20 this week",
-      description: "Set aside R20 for a goal of your choice.",
+      id: "4",
+      title: "No Impulse Buys",
+      description: "Avoid unplanned purchases for 24 hours. Think before you buy!",
       xpReward: 20,
-      amountSuggestion: 20,
       isActive: true,
     },
     {
-      id: "m5",
-      title: "Learn one savings tip",
-      description: "Read or watch one financial literacy tip today.",
-      xpReward: 5,
+      id: "5",
+      title: "Review Bank Statement",
+      description: "Check your bank statement for unnecessary subscriptions.",
+      xpReward: 30,
       isActive: true,
     },
   ];
@@ -155,6 +155,15 @@ export function getProfile(userId: string): Profile | null {
   return safeParse(localStorage.getItem(KEYS.profile(userId)), null);
 }
 
+export function updateProfile(userId: string, updates: Partial<Profile>): Profile | null {
+  const existing = getProfile(userId);
+  if (!existing) return null;
+  
+  const updated = { ...existing, ...updates };
+  localStorage.setItem(KEYS.profile(userId), JSON.stringify(updated));
+  return updated;
+}
+
 export function ensureProfile(profile: Profile): Profile {
   const existing = getProfile(profile.userId);
   if (existing) return existing;
@@ -174,28 +183,17 @@ export function ensureProfile(profile: Profile): Profile {
   return newProfile;
 }
 
-export function updateProfile(userId: string, updates: Partial<Profile>): Profile {
-  const existing = getProfile(userId);
-  if (!existing) throw new Error("Profile not found");
-  
-  const updated = { ...existing, ...updates };
-  localStorage.setItem(KEYS.profile(userId), JSON.stringify(updated));
-  return updated;
-}
-
 // Goals helpers
 export function listGoals(userId: string): Goal[] {
   return safeParse(localStorage.getItem(KEYS.goals(userId)), []);
 }
 
-export function createGoal(userId: string, goal: Omit<Goal, "id" | "userId" | "createdAt" | "savedAmount" | "status">): Goal {
+export function createGoal(userId: string, goal: Omit<Goal, "id" | "userId" | "createdAt">): Goal {
   const newGoal: Goal = {
     ...goal,
     id: uuid(),
     userId,
     createdAt: new Date().toISOString(),
-    savedAmount: 0,
-    status: "active",
   };
   
   const goals = listGoals(userId);
@@ -205,71 +203,90 @@ export function createGoal(userId: string, goal: Omit<Goal, "id" | "userId" | "c
   return newGoal;
 }
 
-export function updateGoal(goalId: string, updates: Partial<Goal>): Goal {
-  // Find goal across all users (simplified for demo)
-  const allUserIds = ["demo-user-001"]; // In real app, get from auth
-  let targetGoal: Goal | null = null;
-  let ownerUserId: string | null = null;
-  
-  for (const userId of allUserIds) {
-    const goals = listGoals(userId);
-    const found = goals.find(g => g.id === goalId);
-    if (found) {
-      targetGoal = found;
-      ownerUserId = userId;
-      break;
-    }
-  }
-  
-  if (!targetGoal || !ownerUserId) throw new Error("Goal not found");
-  
-  const updated = { ...targetGoal, ...updates };
-  const goals = listGoals(ownerUserId);
+export function updateGoal(userId: string, goalId: string, updates: Partial<Goal>): Goal | null {
+  const goals = listGoals(userId);
   const index = goals.findIndex(g => g.id === goalId);
-  goals[index] = updated;
-  localStorage.setItem(KEYS.goals(ownerUserId), JSON.stringify(goals));
   
-  return updated;
+  if (index === -1) return null;
+  
+  goals[index] = { ...goals[index], ...updates };
+  localStorage.setItem(KEYS.goals(userId), JSON.stringify(goals));
+  
+  return goals[index];
 }
 
-export function deleteGoal(goalId: string): void {
-  const allUserIds = ["demo-user-001"];
+export function deleteGoal(userId: string, goalId: string): boolean {
+  const goals = listGoals(userId);
+  const filtered = goals.filter(g => g.id !== goalId);
   
-  for (const userId of allUserIds) {
-    const goals = listGoals(userId);
-    const filtered = goals.filter(g => g.id !== goalId);
-    if (filtered.length !== goals.length) {
-      localStorage.setItem(KEYS.goals(userId), JSON.stringify(filtered));
-      return;
-    }
-  }
+  if (filtered.length === goals.length) return false;
   
-  throw new Error("Goal not found");
+  localStorage.setItem(KEYS.goals(userId), JSON.stringify(filtered));
+  return true;
 }
 
-// Missions helpers
+// Mission helpers
 export function listMissions(): Mission[] {
-  seedMissionsOnce();
-  return safeParse(localStorage.getItem(KEYS.missions), []);
+  return safeParse(localStorage.getItem(KEYS.missions), [
+    {
+      id: "1",
+      title: "Save R5 Today",
+      description: "Put aside just R5 today - every rand counts!",
+      xpReward: 10,
+      amountSuggestion: 5,
+      isActive: true,
+    },
+    {
+      id: "2", 
+      title: "Skip Takeaway",
+      description: "Cook at home instead of buying takeaway. Save R50+!",
+      xpReward: 25,
+      amountSuggestion: 50,
+      isActive: true,
+    },
+    {
+      id: "3",
+      title: "Track Expenses",
+      description: "Write down everything you spend today. Awareness is key!",
+      xpReward: 15,
+      isActive: true,
+    },
+    {
+      id: "4",
+      title: "No Impulse Buys",
+      description: "Avoid unplanned purchases for 24 hours. Think before you buy!",
+      xpReward: 20,
+      isActive: true,
+    },
+    {
+      id: "5",
+      title: "Review Bank Statement",
+      description: "Check your bank statement for unnecessary subscriptions.",
+      xpReward: 30,
+      isActive: true,
+    },
+  ]);
 }
 
-export function completeMission(userId: string, missionId: string): void {
+export function completeMission(userId: string, missionId: string): { success: boolean; xpEarned: number } {
   const missions = listMissions();
   const mission = missions.find(m => m.id === missionId);
-  if (!mission) throw new Error("Mission not found");
   
-  // Mark mission as inactive
-  mission.isActive = false;
-  localStorage.setItem(KEYS.missions, JSON.stringify(missions));
+  if (!mission) return { success: false, xpEarned: 0 };
   
   // Grant XP
-  const profile = getProfile(userId);
-  if (profile) {
-    updateProfile(userId, {
-      xpPoints: profile.xpPoints + mission.xpReward,
-      missionsCompleted: profile.missionsCompleted + 1,
-    });
-  }
+  grantXp(userId, mission.xpReward);
+  
+  // Mark as completed (in real app, you'd track this per user)
+  const completedKey = `maligo:mvp:completed:${userId}:${missionId}`;
+  localStorage.setItem(completedKey, JSON.stringify({ completedAt: new Date().toISOString() }));
+  
+  return { success: true, xpEarned: mission.xpReward };
+}
+
+export function isMissionCompleted(userId: string, missionId: string): boolean {
+  const completedKey = `maligo:mvp:completed:${userId}:${missionId}`;
+  return !!localStorage.getItem(completedKey);
 }
 
 // Transactions helpers
@@ -290,11 +307,13 @@ export function addTransaction(userId: string, transaction: Omit<Transaction, "i
   localStorage.setItem(KEYS.tx(userId), JSON.stringify(tx));
   
   // Update profile total saved
-  const profile = getProfile(userId);
-  if (profile && transaction.transactionType === "save") {
-    updateProfile(userId, {
-      totalSaved: profile.totalSaved + transaction.amount,
-    });
+  if (transaction.transactionType === "save") {
+    const profile = getProfile(userId);
+    if (profile) {
+      updateProfile(userId, {
+        totalSaved: profile.totalSaved + transaction.amount,
+      });
+    }
   }
   
   return newTx;
@@ -325,39 +344,60 @@ export function grantXp(userId: string, amount: number): void {
   const profile = getProfile(userId);
   if (!profile) return;
   
+  const newTotalXp = profile.xpPoints + amount;
+  const newLevel = Math.floor(newTotalXp / 100) + 1; // 100 XP per level
+  
   updateProfile(userId, {
-    xpPoints: profile.xpPoints + amount,
+    xpPoints: newTotalXp,
+    maliLevel: newLevel,
+    missionsCompleted: profile.missionsCompleted + 1,
   });
 }
 
 // Streak helpers
-export function updateStreak(userId: string): void {
+export function updateStreak(userId: string): { isNewDay: boolean; currentStreak: number; longestStreak: number } {
   const profile = getProfile(userId);
-  if (!profile) return;
+  if (!profile) return { isNewDay: false, currentStreak: 0, longestStreak: 0 };
   
-  const today = new Date();
-  const lastStreakDateStr = localStorage.getItem(KEYS.lastStreakDate(userId));
-  const lastStreakDate = lastStreakDateStr ? new Date(lastStreakDateStr) : null;
+  const today = new Date().toDateString();
+  const lastStreakKey = KEYS.lastStreakDate(userId);
+  const lastStreakDate = localStorage.getItem(lastStreakKey);
   
   let newStreak = profile.currentStreak;
   let newLongest = profile.longestStreak;
+  let isNewDay = false;
   
-  if (!lastStreakDate || !sameDay(lastStreakDate, today)) {
-    const daysSinceLast = daysBetween(lastStreakDate || today, today);
+  if (lastStreakDate !== today) {
+    // Check if it's consecutive day
+    const lastDate = lastStreakDate ? new Date(lastStreakDate) : null;
+    const todayDate = new Date(today);
+    const dayDiff = lastDate ? Math.floor((todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24)) : 1;
     
-    if (daysSinceLast === 1) {
+    if (dayDiff === 1) {
       // Consecutive day
-      newStreak = profile.currentStreak + 1;
-      newLongest = Math.max(newLongest, newStreak);
-    } else if (daysSinceLast > 1) {
+      newStreak += 1;
+      isNewDay = true;
+    } else if (dayDiff > 1) {
       // Streak broken
       newStreak = 1;
+      isNewDay = true;
     }
     
-    localStorage.setItem(KEYS.lastStreakDate(userId), today.toISOString());
+    newLongest = Math.max(newStreak, newLongest);
+    
+    // Update profile and last streak date
     updateProfile(userId, {
       currentStreak: newStreak,
       longestStreak: newLongest,
     });
+    
+    localStorage.setItem(lastStreakKey, today);
+    
+    // Grant daily bonus XP
+    if (isNewDay) {
+      grantXp(userId, 5); // 5 XP daily bonus
+    }
   }
+  
+  return { isNewDay, currentStreak: newStreak, longestStreak: newLongest };
 }
