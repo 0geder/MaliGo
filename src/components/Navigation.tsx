@@ -10,7 +10,7 @@ const Navigation = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src="/favicon.ico" 
+              src="/mali2.png" 
               alt="MaliGo" 
               className="w-8 h-8 object-contain"
             />
