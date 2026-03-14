@@ -23,8 +23,8 @@ const TopNav = () => {
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
           <img 
-            src="/maligo-uploads/b55ce985-e17b-4728-82c2-a40c2b4b9479.png" 
-            alt="Mali the Meerkat" 
+            src="/mali2.png" 
+            alt="MaliGo" 
             className="w-8 h-8 object-contain"
           />
           <span className="text-xl font-bold text-maligo-green hidden sm:inline">MaliGo</span>
