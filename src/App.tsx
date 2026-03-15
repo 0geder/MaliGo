@@ -12,6 +12,7 @@ import ChatTest from "./pages/ChatTest";
 import ChatDebug from "./pages/ChatDebug";
 import Signup from "./pages/Signup";
 import Auth from "./pages/Auth";
+import Glossary from "./pages/Glossary";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/chat" element={<Chat />} />
             <Route path="/chat-test" element={<ChatTest />} />
             <Route path="/chat-debug" element={<ChatDebug />} />
+            <Route path="/glossary" element={<Glossary />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -11,6 +11,9 @@ import {
   completeMission,
   getProfile,
   ensureProfile,
+  addTransaction,
+  updateStreak,
+  isMissionCompleted,
   type Goal,
   type Mission,
   type Transaction,
@@ -23,7 +26,7 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
-import TopNav from "@/components/TopNav";
+import TopNav from "@/components/TopNav"
 
 function formatMoneyZAR(amount: number) {
   return `R${Math.round(amount).toLocaleString("en-ZA")}`
@@ -49,55 +52,128 @@ export default function Dashboard() {
 
   // Editing
   const [editingGoalId, setEditingGoalId] = useState<string | null>(null)
+  const [editTitle, setEditTitle] = useState("")
+  const [editTarget, setEditTarget] = useState("")
 
   useEffect(() => {
-    const p = getProfile(DEMO_USER_ID) ?? ensureProfile({ 
-      userId: DEMO_USER_ID, 
-      fullName: "Demo User",
-      totalSaved: 0,
-      currentStreak: 0,
-      longestStreak: 0,
-      xpPoints: 0,
-      maliLevel: 1,
-      missionsCompleted: 0,
-      badgesEarned: 0,
-    })
+    const existingProfile = getProfile(DEMO_USER_ID)
+
+    const p =
+      existingProfile ??
+      ensureProfile({
+        userId: DEMO_USER_ID,
+        fullName: "Demo User",
+        totalSaved: 0,
+        currentStreak: 0,
+        longestStreak: 0,
+        xpPoints: 0,
+        maliLevel: 1,
+        missionsCompleted: 0,
+        badgesEarned: 0,
+      })
+
     setProfile(p)
     setMissions(listMissions())
     setGoals(listGoals(DEMO_USER_ID))
     setTx(listTransactions(DEMO_USER_ID))
   }, [])
 
-  const handleCreateGoal = () => {
-    if (!goalTitle.trim() || !goalTarget) return
+  function refreshAll() {
+    const updatedProfile = getProfile(DEMO_USER_ID)
+    if (updatedProfile) setProfile(updatedProfile)
 
-    const target = parseFloat(goalTarget)
-    if (isNaN(target) || target <= 0) return
+    setGoals(listGoals(DEMO_USER_ID))
+    setTx(listTransactions(DEMO_USER_ID))
+    setMissions(listMissions())
+  }
+
+  const handleCreateGoal = () => {
+    const title = goalTitle.trim()
+    const target = Number(goalTarget)
+
+    if (!title) {
+      toast({
+        title: "Goal title required",
+        description: "Please enter a goal title.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (!Number.isFinite(target) || target <= 0) {
+      toast({
+        title: "Invalid target",
+        description: "Target amount must be greater than 0.",
+        variant: "destructive",
+      })
+      return
+    }
 
     createGoal(DEMO_USER_ID, {
-      title: goalTitle.trim(),
+      title,
       targetAmount: target,
+      savedAmount: 0,
+      status: "active",
     })
 
     setGoalTitle("")
     setGoalTarget("200")
-    setGoals(listGoals(DEMO_USER_ID))
+    refreshAll()
+
     toast({
       title: "Goal created!",
-      description: `Your goal "${goalTitle}" has been added.`,
+      description: `Your goal "${title}" has been added.`,
     })
   }
 
-  const handleUpdateGoal = (goalId: string, updates: Partial<Goal>) => {
+  const startEditGoal = (goal: Goal) => {
+    setEditingGoalId(goal.id)
+    setEditTitle(goal.title)
+    setEditTarget(String(goal.targetAmount))
+  }
+
+  const cancelEditGoal = () => {
+    setEditingGoalId(null)
+    setEditTitle("")
+    setEditTarget("")
+  }
+
+  const handleUpdateGoal = (goalId: string) => {
+    const title = editTitle.trim()
+    const target = Number(editTarget)
+
+    if (!title) {
+      toast({
+        title: "Goal title required",
+        description: "Please enter a valid title.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (!Number.isFinite(target) || target <= 0) {
+      toast({
+        title: "Invalid target",
+        description: "Target amount must be greater than 0.",
+        variant: "destructive",
+      })
+      return
+    }
+
     try {
-      updateGoal(goalId, updates)
-      setGoals(listGoals(DEMO_USER_ID))
-      setEditingGoalId(null)
+      updateGoal(DEMO_USER_ID, goalId, {
+        title,
+        targetAmount: target,
+      })
+
+      refreshAll()
+      cancelEditGoal()
+
       toast({
         title: "Goal updated",
         description: "Your goal has been updated successfully.",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update goal.",
@@ -108,13 +184,14 @@ export default function Dashboard() {
 
   const handleDeleteGoal = (goalId: string) => {
     try {
-      deleteGoal(goalId)
-      setGoals(listGoals(DEMO_USER_ID))
+      deleteGoal(DEMO_USER_ID, goalId)
+      refreshAll()
+
       toast({
         title: "Goal deleted",
         description: "Your goal has been removed.",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to delete goal.",
@@ -123,17 +200,73 @@ export default function Dashboard() {
     }
   }
 
-  const handleCompleteMission = (missionId: string) => {
+  const handleAddToGoal = (goal: Goal, amount: number) => {
     try {
-      completeMission(DEMO_USER_ID, missionId)
-      const updatedProfile = getProfile(DEMO_USER_ID)
-      setProfile(updatedProfile)
-      setMissions(listMissions())
+      const nextSaved = goal.savedAmount + amount
+      const nextStatus = nextSaved >= goal.targetAmount ? "completed" : "active"
+
+      updateGoal(DEMO_USER_ID, goal.id, {
+        savedAmount: nextSaved,
+        status: nextStatus,
+      })
+
+      addTransaction(DEMO_USER_ID, {
+        transactionType: "save",
+        amount,
+        description: `Added ${formatMoneyZAR(amount)} to goal "${goal.title}"`,
+      })
+
+      refreshAll()
+
+      toast({
+        title: "Goal progress updated",
+        description: `${formatMoneyZAR(amount)} added to "${goal.title}".`,
+      })
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to update goal progress.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleCompleteMission = (mission: Mission) => {
+    try {
+      if (isMissionCompleted(DEMO_USER_ID, mission.id)) {
+        toast({
+          title: "Mission already completed",
+          description: "You already completed this mission in this demo session.",
+        })
+        return
+      }
+
+      const result = completeMission(DEMO_USER_ID, mission.id)
+
+      if (!result.success) {
+        toast({
+          title: "Error",
+          description: "Failed to complete mission.",
+          variant: "destructive",
+        })
+        return
+      }
+
+      updateStreak(DEMO_USER_ID)
+
+      addTransaction(DEMO_USER_ID, {
+        transactionType: "save",
+        amount: mission.amountSuggestion ?? 0,
+        description: `${mission.title} (+${mission.xpReward} XP)`,
+      })
+
+      refreshAll()
+
       toast({
         title: "Mission completed! 🎉",
-        description: `You earned XP! Keep up the great work.`,
+        description: `${mission.title} — +${mission.xpReward} XP`,
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to complete mission.",
@@ -142,9 +275,9 @@ export default function Dashboard() {
     }
   }
 
-  const activeGoals = useMemo(() => goals.filter(g => g.status === "active"), [goals])
-  const completedGoals = useMemo(() => goals.filter(g => g.status === "completed"), [goals])
-  const activeMissions = useMemo(() => missions.filter(m => m.isActive), [missions])
+  const activeGoals = useMemo(() => goals.filter((g) => g.status === "active"), [goals])
+  const completedGoals = useMemo(() => goals.filter((g) => g.status === "completed"), [goals])
+  const activeMissions = useMemo(() => missions.filter((m) => m.isActive), [missions])
 
   if (!profile) {
     return (
@@ -157,11 +290,25 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10">
       <TopNav />
+
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-maligo-green mb-2">Welcome back, {profile.fullName}!</h1>
-          <p className="text-gray-600">Here's your savings journey with Mali the Meerkat</p>
+        <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h1 className="text-4xl font-bold text-maligo-green mb-2">
+              Welcome back, {profile.fullName}!
+            </h1>
+            <p className="text-gray-600">Here's your savings journey with Mali the Meerkat</p>
+          </div>
+
+          <div className="flex gap-2">
+            <Button asChild variant="secondary">
+              <Link to="/game">Play Mini-Game</Link>
+            </Button>
+            <Button asChild variant="secondary">
+              <Link to="/chat">Talk to Mali</Link>
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -171,7 +318,9 @@ export default function Dashboard() {
               <CardTitle className="text-maligo-green">Total Saved</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-maligo-green">{formatMoneyZAR(profile.totalSaved)}</div>
+              <div className="text-2xl font-bold text-maligo-green">
+                {formatMoneyZAR(profile.totalSaved)}
+              </div>
               <p className="text-sm text-gray-600">All time savings</p>
             </CardContent>
           </Card>
@@ -182,7 +331,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-maligo-green">{profile.currentStreak} days</div>
-              <p className="text-sm text-gray-600">Keep it going!</p>
+              <p className="text-sm text-gray-600">Longest: {profile.longestStreak} days</p>
             </CardContent>
           </Card>
 
@@ -237,63 +386,125 @@ export default function Dashboard() {
 
               <Separator />
 
-              {/* Goals List */}
-              <div className="space-y-3 max-h-64 overflow-y-auto">
-                {activeGoals.map((goal) => (
-                  <div key={goal.id} className="border rounded-lg p-3">
-                    {editingGoalId === goal.id ? (
-                      <div className="space-y-2">
-                        <Input
-                          defaultValue={goal.title}
-                          onBlur={(e) => handleUpdateGoal(goal.id, { title: e.target.value })}
-                        />
-                        <Input
-                          type="number"
-                          defaultValue={goal.targetAmount}
-                          onBlur={(e) => handleUpdateGoal(goal.id, { targetAmount: parseFloat(e.target.value) })}
-                        />
-                        <Button size="sm" onClick={() => setEditingGoalId(null)}>
-                          Done
-                        </Button>
-                      </div>
-                    ) : (
-                      <div>
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-medium">{goal.title}</h4>
-                          <div className="flex gap-1">
-                            <Button size="sm" variant="ghost" onClick={() => setEditingGoalId(goal.id)}>
-                              Edit
+              {/* Active Goals */}
+              <div className="space-y-3 max-h-80 overflow-y-auto">
+                {activeGoals.map((goal) => {
+                  const isEditing = editingGoalId === goal.id
+                  const pct = progressPct(goal.savedAmount, goal.targetAmount)
+
+                  return (
+                    <div key={goal.id} className="border rounded-lg p-3">
+                      {isEditing ? (
+                        <div className="space-y-2">
+                          <Input
+                            value={editTitle}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            placeholder="Goal title"
+                          />
+                          <Input
+                            type="number"
+                            value={editTarget}
+                            onChange={(e) => setEditTarget(e.target.value)}
+                            placeholder="Target amount"
+                          />
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              onClick={() => handleUpdateGoal(goal.id)}
+                              className="bg-maligo-green hover:bg-maligo-green-dark"
+                            >
+                              Save
                             </Button>
-                            <Button size="sm" variant="ghost" onClick={() => handleDeleteGoal(goal.id)}>
-                              Delete
+                            <Button size="sm" variant="outline" onClick={cancelEditGoal}>
+                              Cancel
                             </Button>
                           </div>
                         </div>
-                        <div className="space-y-1">
-                          <div className="flex justify-between text-sm">
-                            <span>Progress</span>
-                            <span>{progressPct(goal.savedAmount, goal.targetAmount)}%</span>
+                      ) : (
+                        <div>
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <h4 className="font-medium">{goal.title}</h4>
+                              <p className="text-xs text-gray-500">
+                                {formatMoneyZAR(goal.savedAmount)} / {formatMoneyZAR(goal.targetAmount)} ({pct}%)
+                              </p>
+                            </div>
+
+                            <div className="flex gap-1 flex-wrap justify-end">
+                              <Button size="sm" variant="ghost" onClick={() => startEditGoal(goal)}>
+                                Edit
+                              </Button>
+                              <Button size="sm" variant="ghost" onClick={() => handleDeleteGoal(goal.id)}>
+                                Delete
+                              </Button>
+                            </div>
                           </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div
-                              className="bg-maligo-green h-2 rounded-full transition-all"
-                              style={{ width: `${progressPct(goal.savedAmount, goal.targetAmount)}%` }}
-                            />
-                          </div>
-                          <div className="flex justify-between text-sm text-gray-600">
-                            <span>{formatMoneyZAR(goal.savedAmount)}</span>
-                            <span>{formatMoneyZAR(goal.targetAmount)}</span>
+
+                          <div className="space-y-2">
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div
+                                className="bg-maligo-green h-2 rounded-full transition-all"
+                                style={{ width: `${pct}%` }}
+                              />
+                            </div>
+
+                            <div className="flex gap-2 flex-wrap">
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                onClick={() => handleAddToGoal(goal, 5)}
+                              >
+                                +R5
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                onClick={() => handleAddToGoal(goal, 20)}
+                              >
+                                +R20
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                onClick={() => handleAddToGoal(goal, 50)}
+                              >
+                                +R50
+                              </Button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                      )}
+                    </div>
+                  )
+                })}
 
                 {activeGoals.length === 0 && (
                   <p className="text-gray-500 text-center py-4">No active goals. Create one above!</p>
                 )}
               </div>
+
+              {/* Completed Goals */}
+              {completedGoals.length > 0 && (
+                <>
+                  <Separator />
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-maligo-green">Completed Goals</h4>
+                    {completedGoals.map((goal) => (
+                      <div key={goal.id} className="border rounded-lg p-3 bg-green-50">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <h4 className="font-medium">{goal.title}</h4>
+                            <p className="text-sm text-gray-600">
+                              {formatMoneyZAR(goal.savedAmount)} / {formatMoneyZAR(goal.targetAmount)}
+                            </p>
+                          </div>
+                          <Badge className="bg-maligo-green text-white">Completed</Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </CardContent>
           </Card>
 
@@ -305,26 +516,37 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="space-y-3 max-h-96 overflow-y-auto">
-                {activeMissions.map((mission) => (
-                  <div key={mission.id} className="border rounded-lg p-3">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h4 className="font-medium">{mission.title}</h4>
-                        <p className="text-sm text-gray-600">{mission.description}</p>
+                {activeMissions.map((mission) => {
+                  const completed = isMissionCompleted(DEMO_USER_ID, mission.id)
+
+                  return (
+                    <div key={mission.id} className="border rounded-lg p-3">
+                      <div className="flex justify-between items-start mb-2 gap-3">
+                        <div>
+                          <h4 className="font-medium">{mission.title}</h4>
+                          <p className="text-sm text-gray-600">{mission.description}</p>
+
+                          {typeof mission.amountSuggestion === "number" && (
+                            <p className="text-xs text-gray-500 mt-1">
+                              Suggested save amount: {formatMoneyZAR(mission.amountSuggestion)}
+                            </p>
+                          )}
+                        </div>
+
+                        <Badge className="bg-maligo-green text-white">+{mission.xpReward} XP</Badge>
                       </div>
-                      <Badge className="bg-maligo-green text-white">
-                        +{mission.xpReward} XP
-                      </Badge>
+
+                      <Button
+                        size="sm"
+                        onClick={() => handleCompleteMission(mission)}
+                        className="bg-maligo-green hover:bg-maligo-green-dark w-full"
+                        disabled={completed}
+                      >
+                        {completed ? "Completed" : "Complete Mission"}
+                      </Button>
                     </div>
-                    <Button 
-                      size="sm" 
-                      onClick={() => handleCompleteMission(mission.id)}
-                      className="bg-maligo-green hover:bg-maligo-green-dark w-full"
-                    >
-                      Complete Mission
-                    </Button>
-                  </div>
-                ))}
+                  )
+                })}
 
                 {activeMissions.length === 0 && (
                   <p className="text-gray-500 text-center py-4">No active missions. Check back tomorrow!</p>
@@ -342,24 +564,35 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-2 max-h-64 overflow-y-auto">
-              {tx.slice(0, 10).map((transaction) => (
-                <div key={transaction.id} className="flex justify-between items-center py-2 border-b">
-                  <div>
-                    <p className="font-medium">{transaction.description}</p>
-                    <p className="text-sm text-gray-600">
-                      {new Date(transaction.createdAt).toLocaleDateString("en-ZA")}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <div className={`font-bold ${transaction.transactionType === "save" ? "text-maligo-green" : "text-maligo-orange"}`}>
-                      {transaction.transactionType === "save" ? "+" : ""}{formatMoneyZAR(transaction.amount)}
+              {tx
+                .slice()
+                .reverse()
+                .slice(0, 10)
+                .map((transaction) => (
+                  <div key={transaction.id} className="flex justify-between items-center py-2 border-b">
+                    <div>
+                      <p className="font-medium">{transaction.description}</p>
+                      <p className="text-sm text-gray-600">
+                        {new Date(transaction.createdAt).toLocaleDateString("en-ZA")}
+                      </p>
                     </div>
-                    <Badge variant="outline" className="text-xs">
-                      {transaction.transactionType}
-                    </Badge>
+
+                    <div className="text-right">
+                      <div
+                        className={`font-bold ${
+                          transaction.transactionType === "save" ? "text-maligo-green" : "text-maligo-orange"
+                        }`}
+                      >
+                        {transaction.transactionType === "save" ? "+" : ""}
+                        {formatMoneyZAR(transaction.amount)}
+                      </div>
+
+                      <Badge variant="outline" className="text-xs">
+                        {transaction.transactionType}
+                      </Badge>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
 
               {tx.length === 0 && (
                 <p className="text-gray-500 text-center py-4">No transactions yet. Start saving!</p>

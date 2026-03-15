@@ -15,6 +15,7 @@ const TopNav = () => {
     { to: "/dashboard", icon: "📊", label: "Dashboard" },
     { to: "/game", icon: "🎮", label: "Game" },
     { to: "/chat", icon: "💬", label: "Chat" },
+    { to: "/glossary", icon: "📚", label: "Glossary" },
   ]
 
   return (

@@ -17,6 +17,7 @@ const BottomNav = () => {
     { to: "/dashboard", icon: "📊", label: "Dashboard", color: "text-green-500" },
     { to: "/game", icon: "🎮", label: "Game", color: "text-orange-500" },
     { to: "/chat", icon: "💬", label: "Chat", color: "text-pink-500" },
+    { to: "/glossary", icon: "📚", label: "Glossary", color: "text-blue-500" },
   ]
 
   const resetAutoHideTimer = () => {

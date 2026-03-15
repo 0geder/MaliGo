@@ -38,6 +38,12 @@ const Features = () => {
       description: "No smartphone? No problem! Access MaliGo through USSD codes and SMS for feature phone users.",
       icon: "📱",
       color: "bg-maligo-green/10 border-maligo-green/20"
+    },
+    {
+      title: "Glossary",
+      description: "Access a comprehensive glossary of financial terms and concepts to help you understand the world of money.",
+      icon: "📚",
+      color: "bg-maligo-blue/10 border-maligo-blue/20"
     }
   ];
 

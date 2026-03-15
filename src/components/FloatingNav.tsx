@@ -16,6 +16,7 @@ const FloatingNav = () => {
     { to: "/dashboard", icon: "📊", label: "Dashboard", color: "bg-maligo-green hover:bg-maligo-green-dark" },
     { to: "/game", icon: "🎮", label: "Budget Game", color: "bg-maligo-orange hover:bg-maligo-orange-dark" },
     { to: "/chat", icon: "💬", label: "Chat with Mali", color: "bg-maligo-purple hover:bg-maligo-purple-dark" },
+    { to: "/glossary", icon: "📚", label: "Glossary", color: "bg-maligo-blue hover:bg-maligo-blue-dark" },
     { to: "/", icon: "🏠", label: "Home", color: "border-maligo-green text-maligo-green hover:bg-maligo-green hover:text-white" },
   ]
 

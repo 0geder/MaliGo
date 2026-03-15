@@ -34,6 +34,11 @@ const Navigation = () => {
                 Chat with Mali
               </Button>
             </Link>
+            <Link to="/glossary">
+              <Button variant="ghost" className="text-gray-700 hover:text-maligo-green">
+                Glossary
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
