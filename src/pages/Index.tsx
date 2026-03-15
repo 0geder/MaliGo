@@ -33,7 +33,8 @@ const Index = () => {
         <Features />
         <GameMechanics />
         <HowItWorks />
-        <Testimonials />
+        {/* Testimonials - Commented out until we have real users */}
+        {/* <Testimonials /> */}
         <Footer />
       </div>
     </div>

@@ -46,72 +46,88 @@ export default function Game() {
   const [xpEarned, setXpEarned] = useState(0)
 
   useEffect(() => {
-    const p = getProfile(DEMO_USER_ID) ?? ensureProfile({ id: DEMO_USER_ID, email: "demo@maligo.test", fullName: "Demo User" })
+    const p = getProfile(DEMO_USER_ID) ?? ensureProfile({ 
+      userId: DEMO_USER_ID, 
+      email: "demo@maligo.test", 
+      fullName: "Demo User" 
+    })
     setProfile(p)
   }, [])
 
-  const needs = useMemo(() => ITEMS.filter(item => item.category === "Needs"), [])
-  const wants = useMemo(() => ITEMS.filter(item => item.category === "Wants"), [])
+  const total = useMemo(() => {
+    return ITEMS.reduce((sum, item) => (selected[item.id] ? sum + item.cost : sum), 0)
+  }, [selected])
 
-  const totalNeeds = useMemo(() => needs.reduce((sum, item) => sum + (selected[item.id] ? item.cost : 0), 0), [selected, needs])
-  const totalWants = useMemo(() => wants.reduce((sum, item) => sum + (selected[item.id] ? item.cost : 0), 0), [selected, wants])
-  const totalSelected = useMemo(() => totalNeeds + totalWants, [totalNeeds, totalWants])
+  const remaining = useMemo(() => BUDGET - total, [total])
 
-  const remaining = useMemo(() => BUDGET - totalSelected, [totalSelected])
-  const isOverBudget = useMemo(() => totalSelected > BUDGET, [totalSelected])
+  const breakdown = useMemo(() => {
+    const picked = ITEMS.filter((i) => selected[i.id])
+    const needs = picked.filter((i) => i.category === "Needs").reduce((s, i) => s + i.cost, 0)
+    const wants = picked.filter((i) => i.category === "Wants").reduce((s, i) => s + i.cost, 0)
+    return { needs, wants, picked }
+  }, [selected])
 
-  const toggleItem = (id: string) => {
-    setSelected(prev => ({ ...prev, [id]: !prev[id] }))
+  function toggle(id: string) {
+    if (submitted) return
+    setSelected((prev) => ({ ...prev, [id]: !prev[id] }))
   }
 
-  const handleSubmit = () => {
-    if (!profile) return
-
-    const correctSelections = ITEMS.filter(item => {
-      if (item.category === "Needs") return selected[item.id] === true
-      return selected[item.id] !== true
-    })
-
-    const score = Math.round((correctSelections.length / ITEMS.length) * 100)
-    let xp = 0
-
-    if (score >= 80) {
-      xp = 50
-      toast({
-        title: "Excellent! 🎉",
-        description: `You scored ${score}%! You understand needs vs wants perfectly. +${xp} XP`,
-      })
-    } else if (score >= 60) {
-      xp = 30
-      toast({
-        title: "Good job! 👍",
-        description: `You scored ${score}%! You're getting the hang of this. +${xp} XP`,
-      })
-    } else if (score >= 40) {
-      xp = 15
-      toast({
-        title: "Not bad! 📚",
-        description: `You scored ${score}%! Keep learning about budgeting. +${xp} XP`,
-      })
-    } else {
-      xp = 5
-      toast({
-        title: "Keep trying! 💪",
-        description: `You scored ${score}%! Budgeting takes practice. +${xp} XP`,
-      })
-    }
-
-    grantXp(DEMO_USER_ID, xp)
-    setXpEarned(xp)
-    setSubmitted(true)
-    setProfile(getProfile(DEMO_USER_ID))
-  }
-
-  const resetGame = () => {
+  function reset() {
     setSelected({})
     setSubmitted(false)
     setXpEarned(0)
   }
+
+  function scoreAndSubmit() {
+    if (submitted) return
+
+    // Simple scoring:
+    // - must include at least 2 needs to be considered "stable"
+    // - staying within budget gives more XP
+    // - picking fewer wants gives bonus XP
+    const needsCount = breakdown.picked.filter((i) => i.category === "Needs").length
+    const wantsCount = breakdown.picked.filter((i) => i.category === "Wants").length
+
+    let xp = 0
+
+    if (needsCount >= 2) xp += 25
+    else xp += 10
+
+    if (total <= BUDGET) {
+      // closer to 0 remaining => okay, but still within budget is good
+      xp += 35
+      if (remaining >= 100) xp += 10 // left something for savings
+      if (remaining >= 250) xp += 10
+    } else {
+      // over budget penalty
+      xp += 10
+    }
+
+    // Encourage limiting wants
+    if (wantsCount === 0) xp += 20
+    else if (wantsCount === 1) xp += 12
+    else if (wantsCount === 2) xp += 6
+
+    // Cap XP for MVP
+    xp = Math.max(10, Math.min(100, xp))
+
+    const next = grantXp(DEMO_USER_ID, xp)
+    setProfile(next)
+    setSubmitted(true)
+    setXpEarned(xp)
+
+    toast({
+      title: "Game complete 🎮",
+      description: total <= BUDGET ? `Nice! You stayed within budget. +${xp} XP` : `Over budget — still learned! +${xp} XP`,
+    })
+  }
+
+  const verdict = useMemo(() => {
+    if (!submitted) return null
+    if (total <= BUDGET && remaining >= 200) return { label: "Budget Boss", desc: "Within budget + money left to save." }
+    if (total <= BUDGET) return { label: "Balanced", desc: "Within budget — now try leave extra for savings." }
+    return { label: "Budget Trouble", desc: "Over budget — cut wants or reduce a need cost." }
+  }, [submitted, total, remaining])
 
   if (!profile) {
     return (
@@ -121,172 +137,131 @@ export default function Game() {
     )
   }
 
-  if (submitted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10\">
-        <TopNav />
-        <div className="max-w-4xl mx-auto p-6\">
-          <Card className="text-center">
+  return (
+    <div className="min-h-screen bg-background">
+      <TopNav />
+      <div className="mx-auto max-w-5xl px-4 py-6">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold">Budget Boss Battle</h1>
+            <p className="text-sm text-muted-foreground">
+              Build a monthly plan under <span className="font-medium">{money(BUDGET)}</span>. Earn XP and learn.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button asChild variant="secondary">
+              <Link to="/dashboard">Back to Dashboard</Link>
+            </Button>
+            <Button asChild variant="secondary">
+              <Link to="/chat">Talk to Mali</Link>
+            </Button>
+          </div>
+        </div>
+
+        <Separator className="my-6" />
+
+        <div className="grid gap-4 lg:grid-cols-3">
+          {/* Pick list */}
+          <Card className="border-border/60 lg:col-span-2">
             <CardHeader>
-              <CardTitle className="text-4xl text-maligo-green mb-4">Game Complete! 🎉</CardTitle>
-              <CardDescription className="text-lg">
-                You earned <span className="font-bold text-maligo-green">+{xpEarned} XP</span>
-              </CardDescription>
+              <CardTitle>Pick your expenses</CardTitle>
+              <CardDescription>Tap items to include them. Try cover needs first.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-lg">
-                <p className="mb-2">Great job learning about budgeting!</p>
-                <p className="text-gray-600">
-                  Remember: Needs are essentials you must pay for (rent, food, transport).<br />
-                  Wants are nice-to-haves that can wait (takeaways, entertainment, new clothes).
-                </p>
+            <CardContent className="space-y-3">
+              <div className="grid gap-3 md:grid-cols-2">
+                {ITEMS.map((item) => {
+                  const isOn = !!selected[item.id]
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => toggle(item.id)}
+                      className={`text-left rounded-lg border p-3 transition ${
+                        isOn ? "border-primary bg-primary/5" : "border-border/60 hover:bg-muted"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="font-medium">{item.name}</div>
+                          <div className="text-xs text-muted-foreground">{item.tip}</div>
+                        </div>
+                        <div className="flex flex-col items-end gap-1">
+                          <Badge variant={item.category === "Needs" ? "secondary" : "outline"}>{item.category}</Badge>
+                          <div className="text-sm font-medium">{money(item.cost)}</div>
+                        </div>
+                      </div>
+                    </button>
+                  )
+                })}
               </div>
-              <div className="flex gap-4 justify-center">
-                <Button onClick={resetGame} className="bg-maligo-green hover:bg-maligo-green-dark">
-                  Play Again
+
+              <div className="flex flex-wrap gap-2 pt-2">
+                <Button onClick={scoreAndSubmit} disabled={submitted}>
+                  Submit & Score
                 </Button>
-                <Link to="/dashboard">
-                  <Button variant="outline" className="border-maligo-green text-maligo-green">
-                    Back to Dashboard
-                  </Button>
-                </Link>
+                <Button variant="outline" onClick={reset}>
+                  Reset
+                </Button>
               </div>
             </CardContent>
           </Card>
-        </div>
-      </div>
-    )
-  }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10\">
-      <TopNav />
-      <div className="max-w-6xl mx-auto p-6\">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-maligo-green mb-4">Budget Challenge Game</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Learn to distinguish between <span className="font-bold text-maligo-green">Needs</span> and{" "}
-            <span className="font-bold text-maligo-orange">Wants</span> with R{BUDGET.toLocaleString("en-ZA")} monthly budget
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Budget Status */}
-          <Card>
+          {/* Summary */}
+          <Card className="border-border/60">
             <CardHeader>
-              <CardTitle className="text-maligo-green">Budget Status</CardTitle>
-              <CardDescription>Track your selections</CardDescription>
+              <CardTitle>Summary</CardTitle>
+              <CardDescription>Your plan + result</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span>Monthly Budget:</span>
-                  <span className="font-bold">{money(BUDGET)}</span>
+            <CardContent className="space-y-3">
+              <div className="rounded-lg border border-border/60 p-3">
+                <div className="text-xs text-muted-foreground">Current Level</div>
+                <div className="text-lg font-semibold">{profile?.maliLevel ?? 1}</div>
+                <div className="text-xs text-muted-foreground">{profile?.xpPoints ?? 0} XP</div>
+              </div>
+
+              <div className="rounded-lg border border-border/60 p-3">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-medium">Total</div>
+                  <div className="text-sm font-semibold">{money(total)}</div>
                 </div>
-                <div className="flex justify-between">
-                  <span>Selected:</span>
-                  <span className={`font-bold ${isOverBudget ? "text-red-500" : "text-maligo-green"}`}>
-                    {money(totalSelected)}
-                  </span>
-                </div>
-                <Separator />
-                <div className="flex justify-between">
-                  <span>Remaining:</span>
-                  <span className={`font-bold text-lg ${isOverBudget ? "text-red-500" : "text-maligo-green"}`}>
+
+                <div className="mt-1 flex items-center justify-between">
+                  <div className="text-xs text-muted-foreground">Remaining</div>
+                  <div className={`text-xs font-medium ${remaining >= 0 ? "" : "text-destructive"}`}>
                     {money(remaining)}
-                  </span>
+                  </div>
+                </div>
+
+                <div className="mt-2 flex gap-2">
+                  <Badge variant="secondary">Needs {money(breakdown.needs)}</Badge>
+                  <Badge variant="outline">Wants {money(breakdown.wants)}</Badge>
                 </div>
               </div>
 
-              {isOverBudget && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                  <p className="text-red-700 text-sm">
-                    ⚠️ You're over budget! Unselect some items or focus on needs first.
-                  </p>
+              {submitted ? (
+                <div className="rounded-lg border border-border/60 p-3">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm font-medium">{verdict?.label}</div>
+                    <Badge>+{xpEarned} XP</Badge>
+                  </div>
+                  <div className="mt-1 text-xs text-muted-foreground">{verdict?.desc}</div>
+
+                  <div className="mt-3 text-xs text-muted-foreground">
+                    Mali tip: If you can consistently leave even <span className="font-medium">R200</span> monthly,
+                    that's a savings habit.
+                  </div>
+                </div>
+              ) : (
+                <div className="text-xs text-muted-foreground">
+                  Submit to earn XP. Try include at least 2 "Needs" and keep wants low.
                 </div>
               )}
-
-              <Button 
-                onClick={handleSubmit} 
-                disabled={totalSelected === 0 || isOverBudget}
-                className="w-full bg-maligo-green hover:bg-maligo-green-dark disabled:bg-gray-400"
-              >
-                Submit Budget
-              </Button>
             </CardContent>
           </Card>
+        </div>
 
-          {/* Items Selection */}
-          <div className="space-y-6">
-            {/* Needs Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-maligo-green">Needs (Essentials)</CardTitle>
-                <CardDescription>Items you must pay for each month</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {needs.map((item) => (
-                  <div
-                    key={item.id}
-                    className={`border rounded-lg p-3 cursor-pointer transition-colors ${
-                      selected[item.id] 
-                        ? "border-maligo-green bg-maligo-green/10" 
-                        : "border-gray-200 hover:border-maligo-green/50"
-                    }`}
-                    onClick={() => toggleItem(item.id)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h4 className="font-medium">{item.name}</h4>
-                        <p className="text-sm text-gray-600 mt-1">{item.tip}</p>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-bold text-maligo-green">{money(item.cost)}</div>
-                        {selected[item.id] && (
-                          <Badge className="bg-maligo-green text-white text-xs mt-1">Selected</Badge>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Wants Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-maligo-orange">Wants (Nice-to-haves)</CardTitle>
-                <CardDescription>Items that can wait or be reduced</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {wants.map((item) => (
-                  <div
-                    key={item.id}
-                    className={`border rounded-lg p-3 cursor-pointer transition-colors ${
-                      selected[item.id] 
-                        ? "border-maligo-orange bg-maligo-orange/10" 
-                        : "border-gray-200 hover:border-maligo-orange/50"
-                    }`}
-                    onClick={() => toggleItem(item.id)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h4 className="font-medium">{item.name}</h4>
-                        <p className="text-sm text-gray-600 mt-1">{item.tip}</p>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-bold text-maligo-orange">{money(item.cost)}</div>
-                        {selected[item.id] && (
-                          <Badge className="bg-maligo-orange text-white text-xs mt-1">Selected</Badge>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
+        <div className="py-8 text-center text-xs text-muted-foreground">
+          This mini-game is a demo of MaliGo's "learn by playing" idea — no real money is moved.
         </div>
       </div>
     </div>
