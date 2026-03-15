@@ -66,7 +66,7 @@ const Hero = () => {
           
           <div className="flex justify-center">
             <img 
-              src="/maligo-uploads/b55ce985-e17b-4728-82c2-a40c2b4b9479.png" 
+              src="/mali2.png" 
               alt="Mali the Meerkat - MaliGo Mascot" 
               className="w-80 h-80 object-contain animate-bounce-gentle"
             />
@@ -74,7 +74,11 @@ const Hero = () => {
         </div>
         
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <ArrowDown className="w-6 h-6 text-maligo-green" />
+          <img 
+            src="/mali2.png" 
+            alt="Scroll down indicator" 
+            className="w-6 h-6 object-contain"
+          />
         </div>
       </div>
     </section>
