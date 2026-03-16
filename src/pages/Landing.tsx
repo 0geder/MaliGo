@@ -14,7 +14,7 @@ const Landing = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-navy">
+    <div className="min-h-screen bg-maligo-navy">
       <Hero />
       <Features />
       <GameMechanics />
@@ -28,7 +28,7 @@ const Landing = () => {
           <h2 className="text-3xl font-bold text-white mb-6">
             Ready to Transform Your Financial Future?
           </h2>
-          <p className="text-xl text-white/60 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-white/80 mb-8 max-w-3xl mx-auto">
             Join thousands of South Africans who are already building better financial habits with MaliGo. 
             Start your journey today - it's completely free to begin!
           </p>
@@ -36,7 +36,7 @@ const Landing = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
               size="lg" 
-              className="bg-primary hover:bg-teal-light text-primary-foreground px-8 py-4 text-lg"
+              className="bg-maligo-teal hover:bg-maligo-teal text-white px-8 py-4 text-lg"
               onClick={() => navigate('/signup')}
             >
               Get Started Free
@@ -52,10 +52,10 @@ const Landing = () => {
           </div>
           
           <div className="mt-12 text-center">
-            <p className="text-white/40 mb-4">Already have an account?</p>
+            <p className="text-white/60 mb-4">Already have an account?</p>
             <Button 
               variant="ghost" 
-              className="text-white hover:text-primary"
+              className="text-white hover:text-maligo-teal"
               onClick={() => navigate('/auth')}
             >
               Sign In Here

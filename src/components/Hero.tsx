@@ -60,7 +60,7 @@ const Hero = () => {
                 <Button 
                   variant="outline" 
                   size="lg"
-                  className="border-white/20 text-white hover:bg-white/10 px-8 py-6 text-base rounded-xl"
+                  className="border-maligo-teal text-maligo-teal hover:bg-maligo-teal hover:text-white px-8 py-6 text-base rounded-xl"
                   onClick={() => navigate('/auth')}
                 >
                   Sign In
@@ -91,7 +91,7 @@ const Hero = () => {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-b from-maligo-teal/20 to-transparent rounded-full blur-3xl scale-110" />
               <img 
-                src="/lovable-uploads/b55ce985-e17b-4728-82c2-a40c2b4b9479.png" 
+                src="/mali2.png" 
                 alt="Mali the Meerkat — MaliGo Mascot" 
                 className="relative w-72 h-72 sm:w-80 sm:h-80 lg:w-96 lg:h-96 object-contain animate-float drop-shadow-2xl"
               />
