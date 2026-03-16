@@ -8,25 +8,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
-import BottomNav from '@/components/BottomNav';
-import { setAuthUser, ensureProfile } from '@/lib/mvpDb';
+import { motion } from 'framer-motion';
+import { setAuthUser, ensureProfile, getAuthUser } from '@/lib/mvpDb';
 
 const Auth = () => {
   const { user, signIn, signUp, loading } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  // Redirect if already authenticated
   useEffect(() => {
-    if (user) {
-      navigate('/dashboard');
-    }
+    if (user) navigate('/dashboard');
   }, [user, navigate]);
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
@@ -62,15 +58,15 @@ const Auth = () => {
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
     const fullName = formData.get('fullName') as string;
+    const phoneNumber = formData.get('phoneNumber') as string;
     
     try {
       // Try Supabase signup first
-      const { error } = await signUp(email, password, fullName);
+      const { error } = await signUp(email, password, fullName, phoneNumber);
       
       if (error) {
         // If Supabase fails, use localStorage fallback
@@ -81,6 +77,7 @@ const Auth = () => {
           id: `user_${Date.now()}`,
           email,
           fullName,
+          phoneNumber,
         };
         
         setAuthUser(newUser);
@@ -108,7 +105,7 @@ const Auth = () => {
         toast.success('Welcome to MaliGo! 🎉 Your account has been created!');
         navigate('/dashboard');
       } else {
-        toast.success('Welcome to MaliGo! 🎉 Check your email to verify your account.');
+        toast.success('Welcome to MaliGo! Check your email to verify your account.');
         navigate('/dashboard');
       }
     } catch (error) {
@@ -129,74 +126,64 @@ const Auth = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-maligo-green"></div>
+      <div className="min-h-screen flex items-center justify-center bg-navy">
+        <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 p-6 pb-20">
-      <div className="max-w-md mx-auto mt-20">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-maligo-green mb-2">Welcome to MaliGo</h1>
-          <p className="text-gray-600">Your financial literacy journey starts here</p>
-        </div>
+    <div className="min-h-screen relative flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-navy" />
+      <div className="absolute top-20 right-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 left-20 w-48 h-48 bg-gold/10 rounded-full blur-3xl" />
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-center">Sign In / Sign Up</CardTitle>
-            <CardDescription className="text-center">
-              Join Mali the Meerkat and start saving smart
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative w-full max-w-md"
+      >
+        <Card className="border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl">
+          <CardHeader className="text-center pb-2">
+            <div className="flex justify-center mb-3">
+              <img 
+                src="/mali2.png" 
+                alt="MaliGo" 
+                className="w-16 h-16 object-contain animate-float"
+              />
+            </div>
+            <CardTitle className="text-2xl font-bold font-display text-white">
+              Welcome to MaliGo
+            </CardTitle>
+            <CardDescription className="text-white/50">
+              Your savings journey starts here
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 bg-white/5 border border-white/10">
+                <TabsTrigger value="signin" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white/60">Sign In</TabsTrigger>
+                <TabsTrigger value="signup" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white/60">Sign Up</TabsTrigger>
               </TabsList>
               
               <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4">
+                <form onSubmit={handleSignIn} className="space-y-4 mt-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
-                    <Input
-                      id="signin-email"
-                      name="email"
-                      type="email"
-                      placeholder="Enter your email"
-                      required
-                    />
+                    <Label htmlFor="email" className="text-white/70">Email</Label>
+                    <Input id="email" name="email" type="email" placeholder="your@email.com" required
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary" />
                   </div>
-                  
                   <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
-                    <Input
-                      id="signin-password"
-                      name="password"
-                      type="password"
-                      placeholder="Enter your password"
-                      required
-                    />
+                    <Label htmlFor="password" className="text-white/70">Password</Label>
+                    <Input id="password" name="password" type="password" required
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary" />
                   </div>
-                  
-                  <Button
-                    type="submit"
-                    className="w-full bg-maligo-green hover:bg-maligo-green-dark"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <div className="flex items-center space-x-2">
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        <span>Signing In...</span>
-                      </div>
-                    ) : (
-                      "Sign In"
-                    )}
+                  <Button type="submit" className="w-full bg-primary hover:bg-teal-light text-primary-foreground font-semibold rounded-xl py-5" disabled={isLoading}>
+                    {isLoading ? 'Signing in...' : 'Sign In'}
                   </Button>
                   
-                  <div className="text-center text-sm text-gray-600">
+                  <div className="text-center text-sm text-white/40">
                     <p>Demo credentials:</p>
                     <p>Email: demo@maligo.test | Password: password123</p>
                   </div>
@@ -204,86 +191,36 @@ const Auth = () => {
               </TabsContent>
               
               <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-4">
+                <form onSubmit={handleSignUp} className="space-y-3 mt-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-fullname">Full Name</Label>
-                    <Input
-                      id="signup-fullname"
-                      name="fullName"
-                      type="text"
-                      placeholder="Enter your full name"
-                      required
-                    />
+                    <Label htmlFor="fullName" className="text-white/70">Full Name</Label>
+                    <Input id="fullName" name="fullName" type="text" placeholder="Your full name" required
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary" />
                   </div>
-                  
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      name="email"
-                      type="email"
-                      placeholder="Enter your email"
-                      required
-                    />
+                    <Label htmlFor="phoneNumber" className="text-white/70">Phone (Optional)</Label>
+                    <Input id="phoneNumber" name="phoneNumber" type="tel" placeholder="+27 123 456 789"
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary" />
                   </div>
-                  
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <Input
-                      id="signup-password"
-                      name="password"
-                      type="password"
-                      placeholder="Create a password (min 6 characters)"
-                      required
-                      minLength={6}
-                    />
+                    <Label htmlFor="signupEmail" className="text-white/70">Email</Label>
+                    <Input id="signupEmail" name="email" type="email" placeholder="your@email.com" required
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary" />
                   </div>
-                  
-                  <Button
-                    type="submit"
-                    className="w-full bg-maligo-green hover:bg-maligo-green-dark"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <div className="flex items-center space-x-2">
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        <span>Creating Account...</span>
-                      </div>
-                    ) : (
-                      "Sign Up"
-                    )}
+                  <div className="space-y-2">
+                    <Label htmlFor="signupPassword" className="text-white/70">Password</Label>
+                    <Input id="signupPassword" name="password" type="password" required
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary" />
+                  </div>
+                  <Button type="submit" className="w-full bg-primary hover:bg-teal-light text-primary-foreground font-semibold rounded-xl py-5" disabled={isLoading}>
+                    {isLoading ? 'Creating account...' : 'Create Account'}
                   </Button>
                 </form>
               </TabsContent>
             </Tabs>
-            
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                By continuing, you agree to our{' '}
-                <a href="#" className="text-maligo-green hover:underline">
-                  Terms of Service
-                </a>{' '}
-                and{' '}
-                <a href="#" className="text-maligo-green hover:underline">
-                  Privacy Policy
-                </a>
-              </p>
-            </div>
           </CardContent>
         </Card>
-        
-        <div className="mt-8 text-center">
-          <Button
-            variant="outline"
-            onClick={() => navigate('/')}
-            className="border-maligo-green text-maligo-green hover:bg-maligo-green hover:text-white"
-          >
-            ← Back to Home
-          </Button>
-        </div>
-      </div>
-      
-      <BottomNav />
+      </motion.div>
     </div>
   );
 };
