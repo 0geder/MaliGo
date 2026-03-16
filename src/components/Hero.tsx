@@ -1,84 +1,102 @@
-
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ArrowDown } from "lucide-react";
-import { useAuthStatus } from "@/hooks/useAuthStatus";
+import { ArrowRight, Sparkles, Shield, TrendingUp } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { motion } from "framer-motion";
 
 const Hero = () => {
-  const { isSignedUp, isLoading } = useAuthStatus();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleGetStarted = () => {
+    navigate(user ? '/dashboard' : '/auth');
+  };
+
   return (
-    <section className="relative overflow-hidden py-20 px-4 sm:px-6 lg:px-8">
-      <div className="absolute inset-0 bg-gradient-to-br from-maligo-green/5 to-maligo-orange/5"></div>
-      <div className="relative max-w-7xl mx-auto">
-        <div className="text-center">
-          <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            MaliGo: Financial Literacy &<br />
-            <span className="text-maligo-green">Gamified Savings</span><br />
-            for South Africa
-          </h1>
-          
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            {isSignedUp 
-              ? "Welcome back! Continue your savings journey with Mali the Meerkat. Track your progress, complete missions, and build better financial habits."
-              : "Meet Mali the Meerkat! Your friendly financial companion helping you build saving habits through fun challenges, mini-games, and real rewards. Start your savings journey with just R5!"
-            }
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            {!isSignedUp ? (
-              <>
-                <Button 
-                  size="lg" 
-                  className="bg-maligo-green hover:bg-maligo-green-dark text-white px-8 py-3 text-lg"
-                  onClick={() => window.location.href = '/signup'}
-                >
-                  Join Waitlist
-                </Button>
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-maligo-navy" />
+      <div className="absolute inset-0 bg-gradient-to-br from-maligo-navy via-maligo-navy to-maligo-navy opacity-90" />
+      <div className="absolute top-20 right-10 w-72 h-72 bg-maligo-teal/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 left-10 w-56 h-56 bg-maligo-gold/10 rounded-full blur-3xl" />
+      
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Text Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-maligo-teal/15 border border-maligo-teal/20 mb-6">
+              <Sparkles className="w-4 h-4 text-maligo-teal" />
+              <span className="text-sm font-medium text-maligo-teal">Now Live in South Africa</span>
+            </div>
+            
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display text-white mb-6 leading-[1.1]">
+              Save Smarter,{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-maligo-teal to-maligo-teal">
+                Play Better
+              </span>
+              <br />
+              <span className="text-maligo-gold">Grow Together</span>
+            </h1>
+            
+            <p className="text-lg text-white/80 mb-8 max-w-xl leading-relaxed">
+              Meet Mali the Meerkat — your financial companion making saving fun through 
+              challenges, mini-games, and real rewards. Start with just R5.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button 
+                size="lg"
+                className="bg-maligo-teal hover:bg-maligo-teal text-white px-8 py-6 text-base font-semibold rounded-xl shadow-glow-teal"
+                onClick={handleGetStarted}
+              >
+                {user ? 'Go to Dashboard' : 'Get Started Free'}
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+              {!user && (
                 <Button 
                   variant="outline" 
-                  size="lg" 
-                  className="border-maligo-green text-maligo-green hover:bg-maligo-green hover:text-white px-8 py-3 text-lg"
-                  onClick={() => window.location.href = '/game'}
+                  size="lg"
+                  className="border-white/20 text-white hover:bg-white/10 px-8 py-6 text-base rounded-xl"
+                  onClick={() => navigate('/auth')}
                 >
-                  Try Budget Game
+                  Sign In
                 </Button>
-              </>
-            ) : (
-              <>
-                <Button 
-                  size="lg" 
-                  className="bg-maligo-green hover:bg-maligo-green-dark text-white px-8 py-3 text-lg"
-                  onClick={() => window.location.href = '/dashboard'}
-                >
-                  Go to Dashboard
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  className="border-maligo-green text-maligo-green hover:bg-maligo-green hover:text-white px-8 py-3 text-lg"
-                  onClick={() => window.location.href = '/game'}
-                >
-                  Play Budget Game
-                </Button>
-              </>
-            )}
-          </div>
-          
-          <div className="flex justify-center">
-            <img 
-              src="/mali2.png" 
-              alt="Mali the Meerkat - MaliGo Mascot" 
-              className="w-80 h-80 object-contain animate-bounce-gentle"
-            />
-          </div>
-        </div>
-        
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <img 
-            src="/mali2.png" 
-            alt="Scroll down indicator" 
-            className="w-6 h-6 object-contain"
-          />
+              )}
+            </div>
+
+            {/* Trust indicators */}
+            <div className="flex items-center gap-6 mt-10">
+              <div className="flex items-center gap-2 text-white/60">
+                <Shield className="w-4 h-4 text-maligo-teal" />
+                <span className="text-sm">Bank-grade security</span>
+              </div>
+              <div className="flex items-center gap-2 text-white/60">
+                <TrendingUp className="w-4 h-4 text-maligo-gold" />
+                <span className="text-sm">10K+ savers</span>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Mali Mascot */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="flex justify-center lg:justify-end"
+          >
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-b from-maligo-teal/20 to-transparent rounded-full blur-3xl scale-110" />
+              <img 
+                src="/lovable-uploads/b55ce985-e17b-4728-82c2-a40c2b4b9479.png" 
+                alt="Mali the Meerkat — MaliGo Mascot" 
+                className="relative w-72 h-72 sm:w-80 sm:h-80 lg:w-96 lg:h-96 object-contain animate-float drop-shadow-2xl"
+              />
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>

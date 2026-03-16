@@ -39,20 +39,25 @@ All colors MUST be HSL.
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* MaliGo-1 color variables */
+    --navy: 220 90% 4%;
+    --navy-light: 220 84% 8%;
+    --teal: 166 72% 40%;
+    --teal-light: 167 72% 55%;
+    --teal-glow: 166 72% 40% / 0.3;
+    --gold: 40 96% 53%;
+    --gold-light: 40 96% 68%;
+    --coral: 0 84% 60%;
+    --surface: 210 40% 98%;
+    --surface-elevated: 210 40% 96%;
   }
 
   .dark {

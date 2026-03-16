@@ -76,7 +76,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
+    // Clear Supabase session
     await supabase.auth.signOut();
+    
+    // Clear localStorage data
+    localStorage.removeItem('maligo:mvp:authUser');
+    localStorage.removeItem('maligo:mvp:profiles');
+    localStorage.removeItem('maligo:mvp:transactions');
+    localStorage.removeItem('maligo:mvp:userMissions');
+    localStorage.removeItem('maligo:mvp:missions');
+    localStorage.removeItem('maligo_signup');
+    
+    // Redirect to clean landing page without navigation
+    window.location.href = '/';
   };
 
   const value = {
