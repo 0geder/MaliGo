@@ -76,7 +76,11 @@ export default {
 					blue: '#3B82F6',
 					'blue-light': '#93C5FD',
 					cream: '#FEF3E2',
-					brown: '#8B4513'
+					brown: '#8B4513',
+					navy: '#0F172A',
+					gold: '#F59E0B',
+					teal: '#14B8A6',
+					'teal-light': '#5EEAD4'
 				}
 			},
 			borderRadius: {

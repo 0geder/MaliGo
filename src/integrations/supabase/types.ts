@@ -7,352 +7,141 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "14.1"
   }
   public: {
     Tables: {
-      badges: {
-        Row: {
-          created_at: string | null
-          criteria: Json
-          description: string | null
-          icon_url: string | null
-          id: string
-          name: string
-          rarity: string | null
-          xp_bonus: number | null
-        }
-        Insert: {
-          created_at?: string | null
-          criteria: Json
-          description?: string | null
-          icon_url?: string | null
-          id?: string
-          name: string
-          rarity?: string | null
-          xp_bonus?: number | null
-        }
-        Update: {
-          created_at?: string | null
-          criteria?: Json
-          description?: string | null
-          icon_url?: string | null
-          id?: string
-          name?: string
-          rarity?: string | null
-          xp_bonus?: number | null
-        }
-        Relationships: []
-      }
-      competition_participants: {
-        Row: {
-          competition_id: string
-          id: string
-          joined_at: string | null
-          rank: number | null
-          score: number | null
-          user_id: string
-        }
-        Insert: {
-          competition_id: string
-          id?: string
-          joined_at?: string | null
-          rank?: number | null
-          score?: number | null
-          user_id: string
-        }
-        Update: {
-          competition_id?: string
-          id?: string
-          joined_at?: string | null
-          rank?: number | null
-          score?: number | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "competition_participants_competition_id_fkey"
-            columns: ["competition_id"]
-            isOneToOne: false
-            referencedRelation: "competitions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "competition_participants_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      competitions: {
-        Row: {
-          competition_type: string
-          created_at: string | null
-          description: string | null
-          end_date: string
-          entry_fee: number | null
-          id: string
-          max_participants: number | null
-          prize_pool: number | null
-          rules: Json | null
-          start_date: string
-          status: string | null
-          title: string
-        }
-        Insert: {
-          competition_type: string
-          created_at?: string | null
-          description?: string | null
-          end_date: string
-          entry_fee?: number | null
-          id?: string
-          max_participants?: number | null
-          prize_pool?: number | null
-          rules?: Json | null
-          start_date: string
-          status?: string | null
-          title: string
-        }
-        Update: {
-          competition_type?: string
-          created_at?: string | null
-          description?: string | null
-          end_date?: string
-          entry_fee?: number | null
-          id?: string
-          max_participants?: number | null
-          prize_pool?: number | null
-          rules?: Json | null
-          start_date?: string
-          status?: string | null
-          title?: string
-        }
-        Relationships: []
-      }
       missions: {
         Row: {
-          badge_reward: string | null
-          created_at: string | null
-          description: string
+          created_at: string
+          description: string | null
           id: string
           is_active: boolean | null
-          mission_type: string
-          requirements: Json
+          mission_type: string | null
           title: string
-          xp_reward: number
+          xp_reward: number | null
         }
         Insert: {
-          badge_reward?: string | null
-          created_at?: string | null
-          description: string
+          created_at?: string
+          description?: string | null
           id?: string
           is_active?: boolean | null
-          mission_type: string
-          requirements: Json
+          mission_type?: string | null
           title: string
-          xp_reward?: number
+          xp_reward?: number | null
         }
         Update: {
-          badge_reward?: string | null
-          created_at?: string | null
-          description?: string
+          created_at?: string
+          description?: string | null
           id?: string
           is_active?: boolean | null
-          mission_type?: string
-          requirements?: Json
+          mission_type?: string | null
           title?: string
-          xp_reward?: number
+          xp_reward?: number | null
         }
         Relationships: []
       }
       profiles: {
         Row: {
-          avatar_url: string | null
           badges_earned: number | null
-          city: string | null
-          created_at: string | null
+          created_at: string
           current_streak: number | null
-          date_of_birth: string | null
           full_name: string | null
           id: string
           longest_streak: number | null
           mali_level: number | null
           missions_completed: number | null
           phone_number: string | null
-          province: string | null
-          referral_code: string | null
-          referred_by: string | null
           total_saved: number | null
-          updated_at: string | null
-          wallet_balance: number | null
+          updated_at: string
           xp_points: number | null
         }
         Insert: {
-          avatar_url?: string | null
           badges_earned?: number | null
-          city?: string | null
-          created_at?: string | null
+          created_at?: string
           current_streak?: number | null
-          date_of_birth?: string | null
           full_name?: string | null
           id: string
           longest_streak?: number | null
           mali_level?: number | null
           missions_completed?: number | null
           phone_number?: string | null
-          province?: string | null
-          referral_code?: string | null
-          referred_by?: string | null
           total_saved?: number | null
-          updated_at?: string | null
-          wallet_balance?: number | null
+          updated_at?: string
           xp_points?: number | null
         }
         Update: {
-          avatar_url?: string | null
           badges_earned?: number | null
-          city?: string | null
-          created_at?: string | null
+          created_at?: string
           current_streak?: number | null
-          date_of_birth?: string | null
           full_name?: string | null
           id?: string
           longest_streak?: number | null
           mali_level?: number | null
           missions_completed?: number | null
           phone_number?: string | null
-          province?: string | null
-          referral_code?: string | null
-          referred_by?: string | null
           total_saved?: number | null
-          updated_at?: string | null
-          wallet_balance?: number | null
+          updated_at?: string
           xp_points?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_referred_by_fkey"
-            columns: ["referred_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       transactions: {
         Row: {
           amount: number
-          category: string | null
-          created_at: string | null
+          created_at: string
           description: string | null
-          external_transaction_id: string | null
           id: string
-          payment_method: string | null
-          status: string | null
           transaction_type: string
           user_id: string
         }
         Insert: {
-          amount: number
-          category?: string | null
-          created_at?: string | null
-          description?: string | null
-          external_transaction_id?: string | null
-          id?: string
-          payment_method?: string | null
-          status?: string | null
-          transaction_type: string
-          user_id: string
-        }
-        Update: {
           amount?: number
-          category?: string | null
-          created_at?: string | null
+          created_at?: string
           description?: string | null
-          external_transaction_id?: string | null
           id?: string
-          payment_method?: string | null
-          status?: string | null
           transaction_type?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "transactions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_badges: {
-        Row: {
-          badge_id: string
-          earned_at: string | null
-          id: string
-          user_id: string
-        }
-        Insert: {
-          badge_id: string
-          earned_at?: string | null
-          id?: string
-          user_id: string
-        }
         Update: {
-          badge_id?: string
-          earned_at?: string | null
+          amount?: number
+          created_at?: string
+          description?: string | null
           id?: string
+          transaction_type?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "user_badges_badge_id_fkey"
-            columns: ["badge_id"]
-            isOneToOne: false
-            referencedRelation: "badges"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_badges_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       user_missions: {
         Row: {
           completed_at: string | null
-          created_at: string | null
+          created_at: string
           id: string
           mission_id: string
-          progress: Json | null
-          status: string
+          progress: number | null
+          status: string | null
           user_id: string
         }
         Insert: {
           completed_at?: string | null
-          created_at?: string | null
+          created_at?: string
           id?: string
           mission_id: string
-          progress?: Json | null
-          status?: string
-          user_id: string
+          progress?: number | null
+          status?: string | null
+          user_id?: string
         }
         Update: {
           completed_at?: string | null
-          created_at?: string | null
+          created_at?: string
           id?: string
-          mission_id?: string
-          progress?: Json | null
-          status?: string
+          mission_id: string
+          progress?: number | null
+          status?: string | null
           user_id?: string
         }
         Relationships: [
@@ -361,13 +150,6 @@ export type Database = {
             columns: ["mission_id"]
             isOneToOne: false
             referencedRelation: "missions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_missions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
