@@ -351,16 +351,6 @@ export default function Dashboard() {
               <p className="text-sm text-gray-600">Completed</p>
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-maligo-green">Today's Mission</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-lg font-bold text-maligo-green">Save R5</div>
-              <p className="text-sm text-gray-600">+10 XP reward</p>
-            </CardContent>
-          </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
