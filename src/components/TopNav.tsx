@@ -2,21 +2,31 @@ import { Link, useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { useAuthStatus } from "@/hooks/useAuthStatus"
+import { useAuth } from "@/hooks/useAuth"
 
 const TopNav = () => {
   const location = useLocation()
   const { isSignedUp, isLoading } = useAuthStatus()
+  const { signOut } = useAuth()
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
-  
+ 
   // Dynamic navigation items based on signup status
   const navItems = [
     { to: "/", icon: "🏠", label: "Home" },
-    ...(isSignedUp ? [] : [{ to: "/signup", icon: "👤", label: "Sign Up" }]),
     { to: "/dashboard", icon: "📊", label: "Dashboard" },
     { to: "/game", icon: "🎮", label: "Game" },
     { to: "/chat", icon: "💬", label: "Chat" },
     { to: "/glossary", icon: "📚", label: "Glossary" },
   ]
+
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      // Navigation will be handled by auth state change
+    } catch (error) {
+      console.error("Error signing out:", error)
+    }
+  }
 
   return (
     <nav className="sticky top-0 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-lg z-40">
@@ -28,7 +38,7 @@ const TopNav = () => {
             alt="MaliGo" 
             className="w-8 h-8 object-contain"
           />
-          <span className="text-xl font-bold text-maligo-green hidden sm:inline">MaliGo</span>
+          <span className="text-xl font-bold text-primary hidden sm:inline">MaliGo</span>
         </Link>
 
         {/* Navigation Items */}
@@ -44,10 +54,10 @@ const TopNav = () => {
                     variant="ghost"
                     className={`flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
                       isActive
-                        ? "bg-maligo-green/20 text-maligo-green shadow-md"
+                        ? "bg-primary/20 text-primary shadow-md"
                         : isHovered
                         ? "bg-gray-100 text-gray-700"
-                        : "text-gray-600 hover:text-maligo-green"
+                        : "text-gray-600 hover:text-primary"
                     }`}
                     onMouseEnter={() => setHoveredItem(item.to)}
                     onMouseLeave={() => setHoveredItem(null)}
@@ -63,13 +73,25 @@ const TopNav = () => {
                     
                     {/* Active indicator */}
                     {isActive && (
-                      <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-maligo-green rounded-full" />
+                      <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
                     )}
                   </Button>
                 </div>
               </Link>
             )
           })}
+          
+          {/* Sign Out Button - Only show when signed up */}
+          {isSignedUp && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSignOut}
+              className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+            >
+              Sign Out
+            </Button>
+          )}
         </div>
       </div>
     </nav>

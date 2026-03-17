@@ -2,23 +2,33 @@ import { Link, useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { useAuthStatus } from "@/hooks/useAuthStatus"
+import { useAuth } from "@/hooks/useAuth"
 
 const BottomNav = () => {
   const location = useLocation()
   const { isSignedUp, isLoading } = useAuthStatus()
+  const { signOut } = useAuth()
   const [isVisible, setIsVisible] = useState(true)
   const [autoHideTimer, setAutoHideTimer] = useState<NodeJS.Timeout | null>(null)
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
-  
+ 
   // Dynamic navigation items based on signup status
   const navItems = [
     { to: "/", icon: "🏠", label: "Home", color: "text-blue-500" },
-    ...(isSignedUp ? [] : [{ to: "/signup", icon: "👤", label: "Sign Up", color: "text-purple-500" }]),
     { to: "/dashboard", icon: "📊", label: "Dashboard", color: "text-green-500" },
     { to: "/game", icon: "🎮", label: "Game", color: "text-orange-500" },
     { to: "/chat", icon: "💬", label: "Chat", color: "text-pink-500" },
     { to: "/glossary", icon: "📚", label: "Glossary", color: "text-blue-500" },
   ]
+
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      // Navigation will be handled by auth state change
+    } catch (error) {
+      console.error("Error signing out:", error)
+    }
+  }
 
   const resetAutoHideTimer = () => {
     if (autoHideTimer) {
@@ -169,6 +179,19 @@ const BottomNav = () => {
               </Link>
             )
           })}
+          
+          {/* Sign Out Button - Only show when signed up */}
+          {isSignedUp && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleSignOut}
+              className="flex flex-col items-center p-3 h-auto rounded-2xl text-red-500 hover:text-red-700 hover:bg-red-50"
+            >
+              <span className="text-2xl mb-1">🚪</span>
+              <span className="text-xs font-medium">Sign Out</span>
+            </Button>
+          )}
         </div>
         
         {/* Enhanced Auto-hide Indicator */}

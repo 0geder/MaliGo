@@ -183,7 +183,7 @@ export default function Chat() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-maligo-green mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Loading chat...</p>
         </div>
       </div>
@@ -191,18 +191,18 @@ export default function Chat() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10">
+    <div className="min-h-screen bg-gradient-to-br from-surface via-background to-primary/5">
       <TopNav />
       <div className="max-w-4xl mx-auto p-6 h-[calc(100vh-10rem)] flex flex-col">
         {/* Header */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="text-maligo-green text-center">Chat with Mali 🐾</CardTitle>
+            <CardTitle className="text-primary text-center">Chat with Mali 🐾</CardTitle>
             <CardDescription className="text-center">Your financial literacy assistant</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2 text-sm justify-center">
-              <Badge className="bg-maligo-green text-white">Ask me anything!</Badge>
+              <Badge className="bg-primary text-primary-foreground">Ask me anything!</Badge>
               <Badge variant="outline">Goals: {goals.filter(g => g.status === "active").length}</Badge>
               <Badge variant="outline">Streak: {profile.currentStreak} days</Badge>
               <Badge variant="outline">Level {profile.maliLevel}</Badge>
@@ -229,7 +229,7 @@ export default function Chat() {
                   <div
                     className={`max-w-[80%] rounded-lg px-4 py-2 ${
                       message.role === "user"
-                        ? "bg-maligo-green text-white"
+                        ? "bg-primary text-primary-foreground shadow-lg"
                         : "bg-gray-100 text-gray-800"
                     }`}
                   >
@@ -272,7 +272,7 @@ export default function Chat() {
               <Button 
                 onClick={handleSend} 
                 disabled={!input.trim() || isTyping}
-                className="bg-maligo-green hover:bg-maligo-green-dark"
+                className="bg-primary hover:bg-primary/90"
               >
                 Send
               </Button>
