@@ -62,7 +62,7 @@ const Hero = () => {
                 <Button 
                   variant="outline" 
                   size="lg"
-                  className="border-white/20 text-white hover:bg-white/10 px-8 py-6 text-base rounded-xl"
+                  className="border-primary/50 text-primary hover:bg-primary/10 hover:border-primary hover:text-primary px-8 py-6 text-base rounded-xl shadow-lg"
                   onClick={() => navigate('/auth')}
                 >
                   Sign In
