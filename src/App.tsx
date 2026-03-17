@@ -8,6 +8,7 @@ import Landing from "./pages/Landing";
 import LandingAfterLogin from "./pages/LandingAfterLogin";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
+import DashboardEnhanced from "./pages/Dashboard-enhanced";
 import Game from "./pages/Game";
 import Chat from "./pages/Chat";
 import ChatTest from "./pages/ChatTest";
@@ -29,7 +30,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/landing-after-login" element={<LandingAfterLogin />} />
-            <Route path="/dashboard" element={<Index />} />
+            <Route path="/dashboard" element={<DashboardEnhanced />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/home" element={<Index />} />
