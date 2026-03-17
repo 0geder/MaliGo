@@ -14,7 +14,7 @@ const Landing = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-navy">
+    <div className="min-h-screen bg-gradient-to-br from-maligo-navy via-maligo-green/90 to-maligo-navy">
       <Hero />
       <Features />
       <GameMechanics />
@@ -27,7 +27,7 @@ const Landing = () => {
             {/* Left: Trust Indicators */}
             <div className="space-y-8">
               <div className="text-center lg:text-left">
-                <Badge className="mb-4 bg-primary/20 text-primary border-primary/30 shadow-lg">
+                <Badge className="mb-4 bg-maligo-green/20 text-maligo-green border-maligo-green/30 shadow-lg">
                   <Sparkles className="w-5 h-5 mr-2" />
                   Trusted by 10,000+ South Africans
                 </Badge>
@@ -42,25 +42,25 @@ const Landing = () => {
               
               {/* Trust Points */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <Card className="bg-navy-light/30 border-primary/20 shadow-xl">
+                <Card className="bg-white/10 backdrop-blur-sm border-maligo-green/20 shadow-xl">
                   <CardContent className="pt-6 text-center">
-                    <Shield className="w-10 h-10 text-primary mx-auto mb-3 drop-shadow-glow" />
+                    <Shield className="w-10 h-10 text-maligo-green mx-auto mb-3" />
                     <h3 className="font-semibold text-white mb-2">Bank-Level Security</h3>
                     <p className="text-sm text-white/95">Your data is protected</p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-navy-light/30 border-gold/20 shadow-xl">
+                <Card className="bg-white/10 backdrop-blur-sm border-maligo-gold/20 shadow-xl">
                   <CardContent className="pt-6 text-center">
-                    <Users className="w-10 h-10 text-gold mx-auto mb-3 drop-shadow-glow" />
+                    <Users className="w-10 h-10 text-maligo-gold mx-auto mb-3" />
                     <h3 className="font-semibold text-white mb-2">Growing Community</h3>
                     <p className="text-sm text-white/95">Join thousands of savers</p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-navy-light/30 border-primary/20 shadow-xl">
+                <Card className="bg-white/10 backdrop-blur-sm border-maligo-green/20 shadow-xl">
                   <CardContent className="pt-6 text-center">
-                    <Target className="w-10 h-10 text-primary mx-auto mb-3 drop-shadow-glow" />
+                    <Target className="w-10 h-10 text-maligo-green mx-auto mb-3" />
                     <h3 className="font-semibold text-white mb-2">Real Results</h3>
                     <p className="text-sm text-white/95">Track your progress</p>
                   </CardContent>
@@ -70,7 +70,7 @@ const Landing = () => {
 
             {/* Right: CTA */}
             <div className="text-center lg:text-left">
-              <Card className="bg-gradient-to-br from-primary/10 to-teal/10 border-primary/20 shadow-2xl">
+              <Card className="bg-gradient-to-br from-maligo-green/10 to-maligo-teal/10 border-maligo-green/20 shadow-2xl">
                 <CardHeader className="text-center lg:text-left pb-6">
                   <CardTitle className="text-2xl font-bold text-white mb-2">
                     Start Your Financial Journey Today
@@ -84,7 +84,7 @@ const Landing = () => {
                   <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                     <Button 
                       size="lg" 
-                      className="bg-primary hover:bg-teal-light text-primary-foreground px-8 py-4 text-lg font-semibold shadow-glow-teal flex-1 transform hover:scale-105 transition-all duration-200"
+                      className="bg-maligo-green hover:bg-maligo-green-dark text-white px-8 py-4 text-lg font-semibold shadow-lg flex-1 transform hover:scale-105 transition-all duration-200"
                       onClick={() => navigate('/signup')}
                     >
                       Get Started Free
@@ -93,7 +93,7 @@ const Landing = () => {
                     <Button 
                       variant="outline" 
                       size="lg" 
-                      className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg flex-1"
+                      className="border-maligo-green/30 text-maligo-green hover:bg-maligo-green/10 px-8 py-4 text-lg flex-1"
                       onClick={() => navigate('/game')}
                     >
                       Try Demo Game
@@ -104,7 +104,7 @@ const Landing = () => {
                     <p className="text-white/90 mb-4">Already have an account?</p>
                     <Button 
                       variant="ghost" 
-                      className="text-white hover:text-primary font-medium text-base"
+                      className="text-white hover:text-maligo-green font-medium text-base"
                       onClick={() => navigate('/auth')}
                     >
                       Sign In Here

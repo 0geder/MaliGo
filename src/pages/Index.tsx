@@ -30,14 +30,14 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <TopNav />
-      <div className="bg-gradient-to-br from-surface via-background to-primary/5 pt-8">
+      <div className="bg-gradient-to-br from-maligo-cream via-white to-maligo-green-light/10 pt-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Welcome Section */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-foreground mb-4">
+            <h1 className="text-4xl font-bold text-maligo-green mb-4">
               Welcome Back! Ready to Build Wealth? 💰
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
               Track your savings progress, complete daily missions, and level up your financial skills. 
               Your journey continues - let's make today count!
             </p>
@@ -54,7 +54,7 @@ const Index = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                  <Button variant="outline" className="w-full border-maligo-green text-maligo-green hover:bg-maligo-green hover:text-primary-foreground">
                     Play Game
                   </Button>
                 </CardContent>
@@ -71,7 +71,7 @@ const Index = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                  <Button variant="outline" className="w-full border-maligo-green text-maligo-green hover:bg-maligo-green hover:text-primary-foreground">
                     Start Chat
                   </Button>
                 </CardContent>
@@ -81,15 +81,15 @@ const Index = () => {
 
           {/* Quick Stats Preview */}
           <div className="mb-12">
-            <h2 className="text-2xl font-bold text-foreground mb-6 text-center">Your Progress at a Glance</h2>
+            <h2 className="text-2xl font-bold text-maligo-green mb-6 text-center">Your Progress at a Glance</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">🎯 Today's Focus</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-primary">Daily Mission</div>
-                  <p className="text-sm text-muted-foreground">Complete your mission for +10 XP</p>
+                  <div className="text-2xl font-bold text-maligo-green">Daily Mission</div>
+                  <p className="text-sm text-gray-600">Complete your mission for +10 XP</p>
                 </CardContent>
               </Card>
 
@@ -98,8 +98,8 @@ const Index = () => {
                   <CardTitle className="text-lg">🔥 Current Streak</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-gold">7 Days</div>
-                  <p className="text-sm text-muted-foreground">Keep it going!</p>
+                  <div className="text-2xl font-bold text-maligo-gold">7 Days</div>
+                  <p className="text-sm text-gray-600">Keep it going!</p>
                 </CardContent>
               </Card>
 
@@ -108,8 +108,8 @@ const Index = () => {
                   <CardTitle className="text-lg">💰 Total Saved</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-primary">R2,450</div>
-                  <p className="text-sm text-muted-foreground">Great progress!</p>
+                  <div className="text-2xl font-bold text-maligo-green">R2,450</div>
+                  <p className="text-sm text-gray-600">Great progress!</p>
                 </CardContent>
               </Card>
 
@@ -118,8 +118,8 @@ const Index = () => {
                   <CardTitle className="text-lg">📈 Mali Level</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-gold">Level 3</div>
-                  <p className="text-sm text-muted-foreground">250 XP to next level</p>
+                  <div className="text-2xl font-bold text-maligo-gold">Level 3</div>
+                  <p className="text-sm text-gray-600">250 XP to next level</p>
                 </CardContent>
               </Card>
             </div>
