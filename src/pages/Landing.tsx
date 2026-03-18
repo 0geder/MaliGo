@@ -27,10 +27,10 @@ const Landing = () => {
             {/* Left: Trust Indicators */}
             <div className="space-y-8">
               <div className="text-center lg:text-left">
-                <Badge className="mb-4 bg-maligo-green/20 text-maligo-green border-maligo-green/30 shadow-lg">
+                {/* <Badge className="mb-4 bg-maligo-green/20 text-maligo-green border-maligo-green/30 shadow-lg">
                   <Sparkles className="w-5 h-5 mr-2" />
                   Trusted by 10,000+ South Africans
-                </Badge>
+                </Badge> */}
                 <h2 className="text-3xl font-bold text-white mb-6">
                   Join the Financial Literacy Revolution
                 </h2>
@@ -42,27 +42,27 @@ const Landing = () => {
               
               {/* Trust Points */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <Card className="bg-white/10 backdrop-blur-sm border-maligo-green/20 shadow-xl">
+                <Card className="bg-white/90 backdrop-blur-sm border-maligo-green/30 shadow-xl">
                   <CardContent className="pt-6 text-center">
                     <Shield className="w-10 h-10 text-maligo-green mx-auto mb-3" />
-                    <h3 className="font-semibold text-white mb-2">Bank-Level Security</h3>
-                    <p className="text-sm text-white/95">Your data is protected</p>
+                    <h3 className="font-semibold text-maligo-navy mb-2">Bank-Level Security</h3>
+                    <p className="text-sm text-maligo-navy/80">Your data is protected</p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-white/10 backdrop-blur-sm border-maligo-gold/20 shadow-xl">
+                <Card className="bg-white/90 backdrop-blur-sm border-maligo-gold/30 shadow-xl">
                   <CardContent className="pt-6 text-center">
                     <Users className="w-10 h-10 text-maligo-gold mx-auto mb-3" />
-                    <h3 className="font-semibold text-white mb-2">Growing Community</h3>
-                    <p className="text-sm text-white/95">Join thousands of savers</p>
+                    <h3 className="font-semibold text-maligo-navy mb-2">Growing Community</h3>
+                    <p className="text-sm text-maligo-navy/80">Join thousands of savers</p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-white/10 backdrop-blur-sm border-maligo-green/20 shadow-xl">
+                <Card className="bg-white/90 backdrop-blur-sm border-maligo-green/30 shadow-xl">
                   <CardContent className="pt-6 text-center">
                     <Target className="w-10 h-10 text-maligo-green mx-auto mb-3" />
-                    <h3 className="font-semibold text-white mb-2">Real Results</h3>
-                    <p className="text-sm text-white/95">Track your progress</p>
+                    <h3 className="font-semibold text-maligo-navy mb-2">Real Results</h3>
+                    <p className="text-sm text-maligo-navy/80">Track your progress</p>
                   </CardContent>
                 </Card>
               </div>
@@ -72,10 +72,10 @@ const Landing = () => {
             <div className="text-center lg:text-left">
               <Card className="bg-gradient-to-br from-maligo-green/10 to-maligo-teal/10 border-maligo-green/20 shadow-2xl">
                 <CardHeader className="text-center lg:text-left pb-6">
-                  <CardTitle className="text-2xl font-bold text-white mb-2">
+                  <CardTitle className="text-2xl font-bold text-maligo-green mb-2">
                     Start Your Financial Journey Today
                   </CardTitle>
-                  <CardDescription className="text-lg text-white/90">
+                  <CardDescription className="text-lg text-maligo-navy">
                     Join thousands of South Africans building better financial futures. 
                     No credit card required. Start with just R5.
                   </CardDescription>
@@ -101,10 +101,10 @@ const Landing = () => {
                   </div>
                   
                   <div className="text-center">
-                    <p className="text-white/90 mb-4">Already have an account?</p>
+                    <p className="text-maligo-navy mb-4 font-medium">Already have an account?</p>
                     <Button 
                       variant="ghost" 
-                      className="text-white hover:text-maligo-green font-medium text-base"
+                      className="text-maligo-green hover:text-maligo-green-dark font-semibold text-base"
                       onClick={() => navigate('/auth')}
                     >
                       Sign In Here

@@ -296,19 +296,25 @@ export default function FeatureCarousel() {
                 }}
               >
                 <div
-                  className={`w-full flex flex-col items-center justify-center text-center rounded-2xl border bg-white transition-all duration-[420ms] ease-in-out px-6 py-8 select-none ${cardClass}`}
+                  className={`w-full flex flex-col items-center justify-center text-center rounded-2xl border transition-all duration-[420ms] ease-in-out px-6 py-8 select-none ${cardClass} ${
+                    diff === 0
+                      ? 'bg-gradient-to-br from-white to-maligo-green/5 border-maligo-green/20 shadow-xl'
+                      : diff === 1
+                      ? 'bg-gradient-to-br from-white to-maligo-green/2 border-maligo-green/10'
+                      : 'bg-white border-gray-100'
+                  }`}
                   style={{ height: "210px" }}
                 >
                   <div
-                    className="w-11 h-11 rounded-full flex items-center justify-center text-xl mb-3 flex-shrink-0"
+                    className="w-14 h-14 rounded-full flex items-center justify-center text-2xl mb-4 flex-shrink-0 shadow-lg ring-4 ring-white/50"
                     style={{ background: card.bg, color: card.col }}
                   >
                     {card.icon}
                   </div>
-                  <p className="text-[15px] font-medium text-gray-800 mb-2 leading-snug">
+                  <p className="text-base font-semibold text-maligo-navy mb-3 leading-snug">
                     {card.title}
                   </p>
-                  <p className="text-[12px] text-gray-500 leading-relaxed">
+                  <p className="text-sm text-maligo-navy/80 leading-relaxed">
                     {card.description}
                   </p>
                 </div>
